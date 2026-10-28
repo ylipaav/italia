@@ -7,6 +7,10 @@
   --tile-edge: #d9ccb6;
   --tile-blocked: #d8d0c2;
   --tile-blocked-edge: #bfb4a2;
+  --tile-fi: #e6eefc;
+  --tile-fi-edge: #9fb8e3;
+  --tile-it: #e3f4ea;
+  --tile-it-edge: #93c9ab;
   --fi: #2b5ea7;
   --it: #1f7a4d;
   --wrong: #c0392b;
@@ -24,6 +28,10 @@
     --tile-edge: #241f1b;
     --tile-blocked: #2b2622;
     --tile-blocked-edge: #1a1613;
+    --tile-fi: #243b5e;
+    --tile-fi-edge: #4f78b8;
+    --tile-it: #1f4733;
+    --tile-it-edge: #3f9668;
     --fi: #7fa8e6;
     --it: #6cc497;
     --wrong: #ff7b6b;
@@ -122,7 +130,11 @@ button { font: inherit; color: inherit; cursor: pointer; }
   cursor: default;
 }
 .tile:not(.free) .lang, .tile:not(.free) .word { color: var(--muted); opacity: 0.55; }
-.tile.free { box-shadow: 3px 4px 8px rgb(0 0 0 / 0.3); }
+.tile.free {
+  /* Vapaa laatta nousee selvästi peitettyjen yläpuolelle: kohotus ja voimakkaampi varjo. */
+  translate: -2px -3px;
+  box-shadow: 5px 7px 12px rgb(0 0 0 / 0.38), 0 0 0 1px rgb(255 255 255 / 0.6) inset;
+}
 
 .tile .lang {
   position: absolute;
@@ -143,13 +155,14 @@ button { font: inherit; color: inherit; cursor: pointer; }
   hyphens: auto;
 }
 
-.tile.free.fi { border-bottom-color: var(--fi); }
+/* Painettavat laatat ovat kielen mukaan sävytettyjä: sininen suomi, vihreä italia. */
+.tile.free.fi { background: var(--tile-fi); border-color: var(--tile-fi-edge); border-bottom-color: var(--fi); }
 .tile.free.fi .lang, .tile.free.fi .word { color: var(--fi); }
-.tile.free.it { border-bottom-color: var(--it); }
+.tile.free.it { background: var(--tile-it); border-color: var(--tile-it-edge); border-bottom-color: var(--it); }
 .tile.free.it .lang, .tile.free.it .word { color: var(--it); }
 
 .tile.selected {
-  transform: translateY(-4px);
+  transform: translateY(-3px) scale(1.04);
   outline: 3px solid var(--accent);
   outline-offset: -1px;
 }
