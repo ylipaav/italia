@@ -16,7 +16,11 @@ sivun pitää olla tyhjä. Oikea pari poistuu, ja alta paljastuu uusia laattoja.
 - **Väärä pari** näyttää molempien laattojen oikeat käännökset.
 - **Ääntäminen** selaimen italiankielisellä puhesynteesillä. Sen saa pois 🔊-napista, ja seuraava
   napautus keskeyttää lausunnan.
-- **Päiväputki 🔥**, jaettava tulos ja harjoituspöydät päivän pöydän jälkeen.
+- **Päiväputki 🔥** ja harjoituspöydät päivän pöydän jälkeen.
+- **Tilastot 📊:** kalenteri pelatuista päivistä, keskiaika, paras aika, virheettömien osuus ja
+  sanaston tila (hallussa / kertauksessa / oppimatta).
+- **Jaettava tulos** Wordle-tyyliin: pöydän numero, aika, virheet ja emojiruudukko parien
+  ratkaisujärjestyksestä (🟩 suoraan, 🟨 vihjeellä, 🟥 virheen kautta).
 - Vihje 💡 ja sekoitus 🔀, kun pareja ei löydy.
 - PWA: lisättävissä puhelimen aloitusnäytölle, toimii myös ilman verkkoa.
 - Edistyminen tallentuu selaimen `localStorage`en, joten palvelinta ei tarvita.
@@ -40,7 +44,8 @@ Puhelimella kokeiltaessa helpointa on julkaista repositorio **GitHub Pagesissa**
 | `js/words.js` | Sanasto (noin 120 paria teemoittain) |
 | `js/layout.js` | Pöytämuodot: laattojen paikat ja kerrokset (`?layout=Portaat` pakottaa muodon) |
 | `js/board.js` | Vapaat laatat, parit ja ratkaistavan pöydän generointi |
-| `js/progress.js` | Kertausalgoritmi, päiväputki ja tallennus |
+| `js/progress.js` | Kertausalgoritmi, päiväputki, historia ja tallennus |
+| `js/stats.js` | Tilastot, kalenteri ja jakoteksti |
 | `js/speech.js` | Ääntäminen |
 | `js/main.js` | Käyttöliittymä |
 
@@ -49,4 +54,4 @@ Puhelimella kokeiltaessa helpointa on julkaista repositorio **GitHub Pagesissa**
 - Lisää pöytämuotoja (pyramidi, Colosseum) ja teemapöytiä
 - Kuva/emoji ↔ italia -laatat, verbien taivutusparit, artikkelipelit (*il / la*)
 - Harhautuslaatat ja "väärät ystävät" (*la camera* = huone)
-- Muistutusilmoitus illalla, tilastot ja kalenterinäkymä
+- Muistutusilmoitus illalla (vaatii push-palvelimen tai kalenterimuistutuksen)

@@ -8,7 +8,11 @@ const KEY = 'tessere.v1';
 export const INTERVALS = [0, 1, 3, 7, 14, 30, 60];
 
 export function defaultState() {
-  return { words: {}, streak: 0, bestStreak: 0, lastDaily: null, daily: null, sound: true };
+  return {
+    words: {}, streak: 0, bestStreak: 0, lastDaily: null, daily: null, sound: true,
+    history: {}, // päivämäärä → päivän pöydän tulos
+    practice: 0, // pelattujen harjoituspöytien määrä
+  };
 }
 
 export function loadState(storage) {

@@ -7,6 +7,9 @@ import {
 } from './progress.js';
 import { speak, stopSpeech, speechSupported } from './speech.js';
 import { VERSION } from './version.js';
+import {
+  puzzleNumber, computeStats, wordStats, calendarWeeks, sequenceEmoji, shareText, formatTime,
+} from './stats.js';
 
 const $ = (id) => document.getElementById(id);
 const boardEl = $('board');
@@ -38,6 +41,7 @@ function startGame(mode) {
     hints: 0,
     missed: new Set(),
     hinted: new Set(),
+    sequence: [], // parien ratkaisutapa järjestyksessä jakotekstiä varten
     start: Date.now(),
     seconds: 0,
     done: false,
@@ -80,6 +84,7 @@ function onTileClick(tile) {
 
 function removePair(a, b) {
   game.tiles = game.tiles.filter((t) => t !== a && t !== b);
+  game.sequence.push(game.missed.has(a.pairId) ? 'miss' : game.hinted.has(a.pairId) ? 'hint' : 'clean');
   for (const t of [a, b]) {
     const el = tileEl(t);
     el?.classList.add('gone');
@@ -135,14 +140,21 @@ function finishGame() {
   applyResult(state.words, results, game.today);
   const summary = {
     date: game.today,
+    layout: game.layout.name,
     seconds: game.seconds,
     mistakes: game.mistakes,
     hints: game.hints,
+    pairs: game.words.length,
+    sequence: game.sequence,
     words: results.map((r, i) => ({ ...r, fi: game.words[i].fi, it: game.words[i].it })),
   };
   if (game.mode === 'daily') {
     updateStreak(state, game.today);
     state.daily = summary;
+    const { words: _words, ...record } = summary;
+    state.history[game.today] = record;
+  } else {
+    state.practice = (state.practice ?? 0) + 1;
   }
   saveState(localStorage, state);
   updateStreakLabel();
@@ -256,7 +268,7 @@ function closeOverlay() {
 }
 
 function showSummary(summary, mode) {
-  const title = mode === 'daily' ? 'Päivän pöytä ratkaistu! 🎉' : 'Harjoitus valmis! 👏';
+  const title = mode === 'daily' ? `Pöytä #${puzzleNumber(summary.date)} ratkaistu! 🎉` : 'Harjoitus valmis! 👏';
   const rows = summary.words
     .map((w) => `
       <li class="${w.outcome}">
@@ -270,11 +282,13 @@ function showSummary(summary, mode) {
     <h2>${title}</h2>
     <p class="stats">⏱ ${formatTime(summary.seconds)} · ✗ ${summary.mistakes} virhettä · 💡 ${summary.hints} vihjettä</p>
     <p class="stats">🔥 Putki: ${currentStreak(state, todayStr())} päivää (paras ${state.bestStreak})</p>
+    ${summary.sequence?.length ? `<p class="sequence">${sequenceEmoji(summary.sequence).replace(/\n/g, '<br>')}</p>` : ''}
     <h3>Tämän pöydän sanat</h3>
     <ul class="wordlist">${rows}</ul>
     <div class="actions">
-      ${mode === 'daily' ? '<button class="btn" type="button" data-action="share">📤 Jaa tulos</button>' : ''}
-      <button class="btn primary" type="button" data-action="practice">Harjoittele lisää</button>
+      ${mode === 'daily' ? '<button class="btn" type="button" data-action="share">📤 Jaa</button>' : ''}
+      <button class="btn" type="button" data-action="stats">📊 Tilastot</button>
+      <button class="btn primary" type="button" data-action="practice">Harjoittele</button>
     </div>
     <p class="note">Uusi päivän pöytä huomenna. Virheelliset sanat tulevat kertaukseen pian.</p>
   `);
@@ -295,10 +309,53 @@ function showHelp() {
   `);
 }
 
+function showStats() {
+  const today = todayStr();
+  const st = computeStats(state, today);
+  const ws = wordStats(WORDS, state.words);
+  const pct = (n) => `${(n / ws.total) * 100}%`;
+  const weeks = calendarWeeks(state.history, today);
+  const cal = weeks
+    .map((week) => week.map((d) => {
+      const cls = ['day', d.played && 'played', d.clean && 'clean', d.today && 'today', d.future && 'future'].filter(Boolean).join(' ');
+      return `<span class="${cls}" title="${d.date}">${d.day}</span>`;
+    }).join(''))
+    .join('');
+  const tile = (value, label) => `<div class="stat"><b>${value}</b><span>${label}</span></div>`;
+  const played = Boolean(state.history[today]);
+  openOverlay(`
+    <h2>Tilastot</h2>
+    <div class="statgrid">
+      ${tile(st.played, 'pelattua päivää')}
+      ${tile(`🔥 ${st.streak}`, 'putki nyt')}
+      ${tile(st.bestStreak, 'paras putki')}
+      ${tile(st.played ? formatTime(st.avgSeconds) : '–', 'keskiaika')}
+      ${tile(st.played ? formatTime(st.bestSeconds) : '–', 'paras aika')}
+      ${tile(st.played ? `${st.cleanRate} %` : '–', 'virheettömiä')}
+    </div>
+    <h3>Viimeiset ${weeks.length} viikkoa</h3>
+    <div class="calendar">
+      ${['ma', 'ti', 'ke', 'to', 'pe', 'la', 'su'].map((d) => `<span class="dow">${d}</span>`).join('')}
+      ${cal}
+    </div>
+    <p class="legend"><span class="day played clean"></span> virheetön <span class="day played"></span> pelattu <span class="day today"></span> tänään</p>
+    <h3>Sanasto · ${ws.total} sanaa</h3>
+    <div class="bar">
+      <span class="mastered" style="width:${pct(ws.mastered)}"></span><span class="learning" style="width:${pct(ws.learning)}"></span>
+    </div>
+    <p class="legend"><span class="dot mastered"></span> ${ws.mastered} hallussa <span class="dot learning"></span> ${ws.learning} kertauksessa <span class="dot fresh"></span> ${ws.fresh} oppimatta</p>
+    <p class="stats">🀄 ${st.totalPairs} paria päivän pöydissä · ${st.practice} harjoituspöytää</p>
+    <div class="actions">
+      ${played ? '<button class="btn" type="button" data-action="share">📤 Jaa päivän tulos</button>' : ''}
+      <button class="btn primary" type="button" data-action="${played ? 'summary' : 'close'}">${played ? 'Takaisin' : 'Sulje'}</button>
+    </div>
+  `);
+}
+
 async function shareResult() {
   const d = state.daily;
   if (!d) return;
-  const text = `Tessere 🇮🇹 ${d.date}\n🀄 ${d.words.length} paria · ⏱ ${formatTime(d.seconds)} · ✗ ${d.mistakes}\n🔥 ${currentStreak(state, todayStr())} päivän putki`;
+  const text = shareText(d, state, todayStr());
   try {
     if (navigator.share) {
       await navigator.share({ text });
@@ -317,6 +374,8 @@ sheetEl.addEventListener('click', (e) => {
   if (btn.dataset.say) speak(btn.dataset.say);
   else if (btn.dataset.action === 'practice') startGame('practice');
   else if (btn.dataset.action === 'share') shareResult();
+  else if (btn.dataset.action === 'stats') showStats();
+  else if (btn.dataset.action === 'summary') showSummary(state.daily, 'daily');
   else if (btn.dataset.action === 'close') closeOverlay();
 });
 
@@ -348,16 +407,13 @@ $('sound-btn').addEventListener('click', () => {
 $('hint-btn').addEventListener('click', useHint);
 $('shuffle-btn').addEventListener('click', shuffleBoard);
 $('help-btn').addEventListener('click', showHelp);
+$('stats-btn').addEventListener('click', showStats);
 
 let resizeTimer = null;
 window.addEventListener('resize', () => {
   clearTimeout(resizeTimer);
   resizeTimer = setTimeout(renderBoard, 150);
 });
-
-function formatTime(s) {
-  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-}
 
 function pairLine(word) {
   return `<span class="pair"><b>${escapeHtml(word.fi)}</b> = <b>${escapeHtml(word.it)}</b></span>`;

@@ -1,5 +1,5 @@
 // Offline-tuki: sovelluksen tiedostot välimuistiin. Nosta versiota, kun tiedostot muuttuvat.
-const CACHE = 'tessere-v0.2.0';
+const CACHE = 'tessere-v0.3.0';
 const FILES = [
   './',
   'index.html',
@@ -14,6 +14,7 @@ const FILES = [
   'js/speech.js',
   'js/words.js',
   'js/version.js',
+  'js/stats.js',
 ];
 
 self.addEventListener('install', (e) => {

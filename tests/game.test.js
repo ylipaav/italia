@@ -134,3 +134,30 @@ test('päiväputki kasvaa peräkkäisinä päivinä ja katkeaa välipäivästä'
   assert.equal(s.streak, 1);
   assert.equal(s.bestStreak, 2);
 });
+
+test('tilastot: pöydän numero, kalenteri, sanatilat ja jakoteksti', async () => {
+  const { puzzleNumber, calendarWeeks, wordStats, computeStats, shareText, sequenceEmoji } = await import('../js/stats.js');
+  assert.equal(puzzleNumber('2026-10-28'), 1);
+  assert.equal(puzzleNumber('2026-11-01'), 5);
+
+  const history = { '2026-10-27': { seconds: 100, mistakes: 0, pairs: 20 }, '2026-10-28': { seconds: 140, mistakes: 2, pairs: 18 } };
+  const weeks = calendarWeeks(history, '2026-10-28', 2); // keskiviikko
+  assert.equal(weeks.length, 2);
+  assert.equal(weeks[0][0].date, '2026-10-19', 'alkaa maanantaista');
+  assert.equal(weeks[1][2].today, true);
+  assert.equal(weeks[1][1].played && weeks[1][1].clean, true);
+  assert.equal(weeks[1][6].future, true);
+
+  const progress = { ciao: { box: 4 }, grazie: { box: 1 } };
+  const ws = wordStats(WORDS, progress);
+  assert.deepEqual([ws.mastered, ws.learning, ws.fresh], [1, 1, WORDS.length - 2]);
+
+  const state = { ...defaultState(), history, streak: 2, bestStreak: 3, lastDaily: '2026-10-28' };
+  const st = computeStats(state, '2026-10-28');
+  assert.deepEqual([st.played, st.streak, st.bestStreak, st.avgSeconds, st.bestSeconds, st.cleanRate, st.totalPairs], [2, 2, 3, 120, 100, 50, 38]);
+
+  assert.equal(sequenceEmoji(['clean', 'miss', 'hint']), '🟩🟥🟨');
+  assert.equal(sequenceEmoji(Array(10).fill('clean')).split('\n').length, 2, 'rivitys kahdeksan välein');
+  const text = shareText({ date: '2026-10-28', layout: 'Portaat', seconds: 151, mistakes: 1, hints: 0, sequence: ['clean', 'miss'] }, state, '2026-10-28');
+  assert.equal(text, 'Tessere 🇮🇹 #1 · Portaat\n⏱ 2:31 · ✗ 1 · 💡 0\n🟩🟥\n🔥 2 päivän putki');
+});
