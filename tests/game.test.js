@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import { WORDS } from '../js/words.js';
-import { LAYOUT, flatLayout } from '../js/layout.js';
+import { LAYOUTS, pickLayout, flatLayout } from '../js/layout.js';
 import { generateBoard, isFree, isMatch, findFreePairs } from '../js/board.js';
 import { hashString, mulberry32 } from '../js/rng.js';
 import {
@@ -14,9 +14,18 @@ test('sanastossa ei ole päällekkäisiä sanoja', () => {
   assert.equal(new Set(WORDS.map((w) => w.fi)).size, WORDS.length);
 });
 
-test('pohjapöydässä on parillinen määrä laattoja ja yksilölliset paikat', () => {
-  assert.equal(LAYOUT.length % 2, 0);
-  assert.equal(new Set(LAYOUT.map((p) => `${p.x},${p.y},${p.z}`)).size, LAYOUT.length);
+test('jokaisessa pöydässä on parillinen määrä laattoja ja yksilölliset paikat', () => {
+  for (const l of LAYOUTS) {
+    assert.equal(l.tiles.length % 2, 0, l.name);
+    assert.equal(new Set(l.tiles.map((p) => `${p.x},${p.y},${p.z}`)).size, l.tiles.length, l.name);
+    assert.ok(Math.max(...l.tiles.map((p) => p.x)) <= 6, `${l.name} mahtuu puhelimen leveyteen`);
+    // Ylemmän kerroksen laatan alla on oltava jotain.
+    for (const t of l.tiles) {
+      if (t.z === 0) continue;
+      const supported = l.tiles.some((o) => o.z === t.z - 1 && Math.abs(o.x - t.x) < 2 && Math.abs(o.y - t.y) < 2);
+      assert.ok(supported, `${l.name}: laatta ${t.x},${t.y},${t.z} leijuu`);
+    }
+  }
 });
 
 // Pelataan generaattorin tallentama poistojärjestys ja tarkistetaan, että jokainen pari on vapaa.
@@ -34,29 +43,45 @@ function assertSolvable(tiles, order) {
 
 test('vuoden jokainen päivän pöytä on ratkaistavissa', () => {
   let date = '2026-01-01';
+  const seen = new Set();
   for (let i = 0; i < 365; i++, date = addDays(date, 1)) {
     const rand = mulberry32(hashString(`tessere-${date}`));
-    const words = pickWords(WORDS, {}, date, LAYOUT.length / 2, rand);
-    const board = generateBoard(LAYOUT, words, rand);
-    assert.ok(board, `pöytä ${date} generoitui`);
-    assert.equal(board.tiles.length, LAYOUT.length);
+    const layout = pickLayout(rand);
+    seen.add(layout.name);
+    const words = pickWords(WORDS, {}, date, layout.tiles.length / 2, rand);
+    const board = generateBoard(layout.tiles, words, rand);
+    assert.ok(board, `pöytä ${date} (${layout.name}) generoitui`);
+    assert.equal(board.tiles.length, layout.tiles.length);
     assertSolvable(board.tiles, board.order);
+  }
+  assert.equal(seen.size, LAYOUTS.length, 'kaikki pöytämuodot esiintyvät vuoden aikana');
+});
+
+test('jokainen pöytämuoto generoituu sadalla siemenellä', () => {
+  for (const l of LAYOUTS) {
+    for (let seed = 1; seed <= 100; seed++) {
+      const rand = mulberry32(seed);
+      const board = generateBoard(l.tiles, WORDS.slice(0, l.tiles.length / 2), rand);
+      assert.ok(board, `${l.name} siemenellä ${seed}`);
+      assertSolvable(board.tiles, board.order);
+    }
   }
 });
 
 test('sama päivä tuottaa saman pöydän', () => {
   const make = () => {
     const rand = mulberry32(hashString('tessere-2026-10-28'));
-    const words = pickWords(WORDS, {}, '2026-10-28', LAYOUT.length / 2, rand);
-    return generateBoard(LAYOUT, words, rand).tiles.map((t) => `${t.key}:${t.text}`);
+    const layout = pickLayout(rand);
+    const words = pickWords(WORDS, {}, '2026-10-28', layout.tiles.length / 2, rand);
+    return generateBoard(layout.tiles, words, rand).tiles.map((t) => `${t.key}:${t.text}`);
   };
   assert.deepEqual(make(), make());
 });
 
 test('alussa on ainakin yksi vapaa pari ja litteä varapöytä toimii', () => {
   const rand = mulberry32(1);
-  const words = WORDS.slice(0, LAYOUT.length / 2);
-  assert.ok(findFreePairs(generateBoard(LAYOUT, words, rand).tiles).length > 0);
+  const words = WORDS.slice(0, LAYOUTS[0].tiles.length / 2);
+  assert.ok(findFreePairs(generateBoard(LAYOUTS[0].tiles, words, rand).tiles).length > 0);
   for (let n = 1; n <= 16; n++) {
     const board = generateBoard(flatLayout(n * 2), WORDS.slice(0, n), rand);
     assert.ok(board, `litteä pöytä ${n} parilla`);

@@ -1,5 +1,5 @@
 import { WORDS } from './words.js';
-import { LAYOUT, flatLayout } from './layout.js';
+import { LAYOUTS, pickLayout, flatLayout } from './layout.js';
 import { generateBoard, isFree, isMatch, findFreePairs } from './board.js';
 import { hashString, mulberry32 } from './rng.js';
 import {
@@ -24,11 +24,14 @@ function startGame(mode) {
   const today = todayStr();
   const seed = mode === 'daily' ? hashString(`tessere-${today}`) : (Math.random() * 2 ** 32) >>> 0;
   const rand = mulberry32(seed);
-  const words = pickWords(WORDS, state.words, today, LAYOUT.length / 2, rand);
-  const { tiles } = generateBoard(LAYOUT, words, rand);
+  // Kehitysapu: ?layout=Portaat pakottaa pöytämuodon.
+  const forced = new URLSearchParams(location.search).get('layout');
+  const layout = LAYOUTS.find((l) => l.name === forced) ?? pickLayout(rand);
+  const words = pickWords(WORDS, state.words, today, layout.tiles.length / 2, rand);
+  const { tiles } = generateBoard(layout.tiles, words, rand);
 
   game = {
-    mode, today, rand, words, tiles,
+    mode, today, rand, words, tiles, layout,
     selected: null,
     mistakes: 0,
     hints: 0,
@@ -38,7 +41,7 @@ function startGame(mode) {
     seconds: 0,
     done: false,
   };
-  $('mode-label').textContent = mode === 'daily' ? 'Päivän pöytä' : 'Harjoitus';
+  $('mode-label').textContent = `${mode === 'daily' ? 'Päivän pöytä' : 'Harjoitus'} · ${layout.name}`;
   closeOverlay();
   renderBoard();
   startTimer();
@@ -152,9 +155,10 @@ const LAYER_SHIFT = 6;
 function renderBoard() {
   boardEl.innerHTML = '';
   if (!game) return;
-  const maxX = Math.max(...LAYOUT.map((p) => p.x), ...game.tiles.map((p) => p.x)) + 2;
-  const maxY = Math.max(...LAYOUT.map((p) => p.y), ...game.tiles.map((p) => p.y)) + 2;
-  const maxZ = Math.max(...LAYOUT.map((p) => p.z));
+  const all = [...game.layout.tiles, ...game.tiles];
+  const maxX = Math.max(...all.map((p) => p.x)) + 2;
+  const maxY = Math.max(...all.map((p) => p.y)) + 2;
+  const maxZ = Math.max(...all.map((p) => p.z));
 
   const wrap = getComputedStyle(boardEl.parentElement);
   const innerW = boardEl.parentElement.clientWidth - parseFloat(wrap.paddingLeft) - parseFloat(wrap.paddingRight);
@@ -335,6 +339,7 @@ function updateStreakLabel() {
 $('sound-btn').addEventListener('click', () => {
   state.sound = !state.sound;
   if (!state.sound) stopSpeech();
+  else speak('Pronto!'); // kuuluu heti, jotta tietää toimiiko ääni
   saveState(localStorage, state);
   updateSoundButton();
   showToast(state.sound ? 'Ääntäminen päällä' : 'Ääntäminen pois', 'info', 1400);
@@ -361,7 +366,10 @@ function escapeHtml(s) {
   return s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 }
 
-if (!speechSupported) $('sound-btn').hidden = true;
+if (!speechSupported) {
+  $('sound-btn').disabled = true;
+  $('sound-btn').title = 'Selain ei tue puhesynteesiä';
+}
 updateSoundButton();
 updateStreakLabel();
 

@@ -8,7 +8,7 @@ sivun pitää olla tyhjä. Oikea pari poistuu, ja alta paljastuu uusia laattoja.
 
 ## Ominaisuudet
 
-- **Päivän pöytä:** 20 sanaparia (40 laattaa neljän kerroksen pyramidissa). Pöytä vaihtuu joka päivä.
+- **Päivän pöytä:** 17–24 sanaparia. Pöytämuoto (pyramidi, kaksi tornia, neljä pilaria, harjanteet, portaat) ja sanat vaihtuvat joka päivä.
 - **Aina ratkaistavissa:** pöytä rakennetaan takaperin poistamalla pareja vapailta paikoilta.
 - **Jaksotettu kertaus:** noin 40 % sanoista on kertaukseen erääntyneitä, loput uusia.
   Virheellä tehty sana palaa kertaukseen seuraavana päivänä, virheetön siirtyy yhä pidemmälle
@@ -38,7 +38,7 @@ Puhelimella kokeiltaessa helpointa on julkaista repositorio **GitHub Pagesissa**
 | Tiedosto | Sisältö |
 |---|---|
 | `js/words.js` | Sanasto (noin 120 paria teemoittain) |
-| `js/layout.js` | Laattojen paikat ja kerrokset |
+| `js/layout.js` | Pöytämuodot: laattojen paikat ja kerrokset (`?layout=Portaat` pakottaa muodon) |
 | `js/board.js` | Vapaat laatat, parit ja ratkaistavan pöydän generointi |
 | `js/progress.js` | Kertausalgoritmi, päiväputki ja tallennus |
 | `js/speech.js` | Ääntäminen |
