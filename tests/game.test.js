@@ -47,7 +47,7 @@ test('vuoden jokainen päivän pöytä on ratkaistavissa', () => {
 test('sama päivä tuottaa saman pöydän', () => {
   const make = () => {
     const rand = mulberry32(hashString('tessere-2026-10-28'));
-    const words = pickWords(WORDS, {}, '2026-10-28', 16, rand);
+    const words = pickWords(WORDS, {}, '2026-10-28', LAYOUT.length / 2, rand);
     return generateBoard(LAYOUT, words, rand).tiles.map((t) => `${t.key}:${t.text}`);
   };
   assert.deepEqual(make(), make());
@@ -55,7 +55,7 @@ test('sama päivä tuottaa saman pöydän', () => {
 
 test('alussa on ainakin yksi vapaa pari ja litteä varapöytä toimii', () => {
   const rand = mulberry32(1);
-  const words = WORDS.slice(0, 16);
+  const words = WORDS.slice(0, LAYOUT.length / 2);
   assert.ok(findFreePairs(generateBoard(LAYOUT, words, rand).tiles).length > 0);
   for (let n = 1; n <= 16; n++) {
     const board = generateBoard(flatLayout(n * 2), WORDS.slice(0, n), rand);

@@ -8,7 +8,7 @@ sivun pitää olla tyhjä. Oikea pari poistuu, ja alta paljastuu uusia laattoja.
 
 ## Ominaisuudet
 
-- **Päivän pöytä:** 16 sanaparia (32 laattaa kahdessa kerroksessa). Pöytä vaihtuu joka päivä.
+- **Päivän pöytä:** 20 sanaparia (40 laattaa neljän kerroksen pyramidissa). Pöytä vaihtuu joka päivä.
 - **Aina ratkaistavissa:** pöytä rakennetaan takaperin poistamalla pareja vapailta paikoilta.
 - **Jaksotettu kertaus:** noin 40 % sanoista on kertaukseen erääntyneitä, loput uusia.
   Virheellä tehty sana palaa kertaukseen seuraavana päivänä, virheetön siirtyy yhä pidemmälle

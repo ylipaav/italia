@@ -5,6 +5,8 @@
   --accent: #b5472f;
   --tile: #fffaf0;
   --tile-edge: #d9ccb6;
+  --tile-blocked: #d8d0c2;
+  --tile-blocked-edge: #bfb4a2;
   --fi: #2b5ea7;
   --it: #1f7a4d;
   --wrong: #c0392b;
@@ -20,6 +22,8 @@
     --accent: #e0755a;
     --tile: #3a332c;
     --tile-edge: #241f1b;
+    --tile-blocked: #2b2622;
+    --tile-blocked-edge: #1a1613;
     --fi: #7fa8e6;
     --it: #6cc497;
     --wrong: #ff7b6b;
@@ -106,12 +110,19 @@ button { font: inherit; color: inherit; cursor: pointer; }
   border-radius: 8px;
   background: var(--tile);
   box-shadow: 2px 3px 5px rgb(0 0 0 / 0.22);
-  filter: brightness(0.82) saturate(0.7);
-  transition: transform 0.12s, filter 0.15s, opacity 0.25s;
+  transition: transform 0.12s, filter 0.15s, opacity 0.25s, background 0.15s;
   user-select: none;
 }
 
-.tile.free { filter: none; }
+/* Peitetty laatta: harmaa, himmeä ja ilman väriä. Vain vapaat laatat ovat kirkkaita ja värillisiä. */
+.tile:not(.free) {
+  background: var(--tile-blocked);
+  border-color: var(--tile-blocked-edge);
+  box-shadow: 1px 1px 2px rgb(0 0 0 / 0.15);
+  cursor: default;
+}
+.tile:not(.free) .lang, .tile:not(.free) .word { color: var(--muted); opacity: 0.55; }
+.tile.free { box-shadow: 3px 4px 8px rgb(0 0 0 / 0.3); }
 
 .tile .lang {
   position: absolute;
@@ -132,10 +143,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
   hyphens: auto;
 }
 
-.tile.fi { border-bottom-color: var(--fi); }
-.tile.fi .lang, .tile.fi .word { color: var(--fi); }
-.tile.it { border-bottom-color: var(--it); }
-.tile.it .lang, .tile.it .word { color: var(--it); }
+.tile.free.fi { border-bottom-color: var(--fi); }
+.tile.free.fi .lang, .tile.free.fi .word { color: var(--fi); }
+.tile.free.it { border-bottom-color: var(--it); }
+.tile.free.it .lang, .tile.free.it .word { color: var(--it); }
 
 .tile.selected {
   transform: translateY(-4px);

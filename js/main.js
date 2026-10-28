@@ -147,7 +147,7 @@ function finishGame() {
 
 // ---------- Piirtäminen ----------
 
-const LAYER_SHIFT = 5;
+const LAYER_SHIFT = 6;
 
 function renderBoard() {
   boardEl.innerHTML = '';

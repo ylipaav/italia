@@ -7,10 +7,12 @@ function grid(xs, ys, z) {
   return out;
 }
 
-// Pystysuuntainen pöytä puhelimelle: 4×5 pohja + 3×4 toinen kerros = 32 laattaa (16 paria).
+// Pyramidi puhelimelle: 4×5 + 3×4 + 2×3 + 1×2 = 40 laattaa (20 paria) neljässä kerroksessa.
 export const LAYOUT = [
   ...grid([0, 2, 4, 6], [0, 2, 4, 6, 8], 0),
   ...grid([1, 3, 5], [1, 3, 5, 7], 1),
+  ...grid([2, 4], [2, 4, 6], 2),
+  ...grid([3], [3, 5], 3),
 ];
 
 // Litteä varapöytä sekoitukseen, jos jäljellä olevista paikoista ei saa ratkaistavaa.
