@@ -6,6 +6,7 @@ import {
   loadState, saveState, todayStr, pickWords, applyResult, updateStreak, currentStreak,
 } from './progress.js';
 import { speak, stopSpeech, speechSupported } from './speech.js';
+import { VERSION } from './version.js';
 
 const $ = (id) => document.getElementById(id);
 const boardEl = $('board');
@@ -372,6 +373,7 @@ if (!speechSupported) {
 }
 updateSoundButton();
 updateStreakLabel();
+$('version').textContent = `Tessere v${VERSION}`;
 
 if (state.daily?.date === todayStr()) {
   showSummary(state.daily, 'daily');
