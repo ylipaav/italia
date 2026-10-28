@@ -1,0 +1,15 @@
+{
+  "name": "Tessere – italiaa laatoilla",
+  "short_name": "Tessere",
+  "description": "Päivittäinen Mahjong-tyylinen laattapeli italian sanaston opiskeluun.",
+  "lang": "fi",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f6efe3",
+  "theme_color": "#b5472f",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
