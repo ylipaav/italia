@@ -161,3 +161,9 @@ test('tilastot: pöydän numero, kalenteri, sanatilat ja jakoteksti', async () =
   const text = shareText({ date: '2026-10-28', layout: 'Portaat', seconds: 151, mistakes: 1, hints: 0, sequence: ['clean', 'miss'] }, state, '2026-10-28');
   assert.equal(text, 'Tessere 🇮🇹 #1 · Portaat\n⏱ 2:31 · ✗ 1 · 💡 0\n🟩🟥\n🔥 2 päivän putki');
 });
+
+test('kuvakkeet ovat yksilöllisiä', () => {
+  const icons = WORDS.filter((w) => w.icon).map((w) => w.icon);
+  assert.ok(icons.length >= 60);
+  assert.equal(new Set(icons).size, icons.length);
+});

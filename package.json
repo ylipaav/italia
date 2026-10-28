@@ -1,6 +1,6 @@
 {
   "name": "tessere",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "description": "Päivittäinen Mahjong-tyylinen laattapeli italian sanaston opiskeluun",
   "type": "module",

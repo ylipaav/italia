@@ -146,7 +146,7 @@ function finishGame() {
     hints: game.hints,
     pairs: game.words.length,
     sequence: game.sequence,
-    words: results.map((r, i) => ({ ...r, fi: game.words[i].fi, it: game.words[i].it })),
+    words: results.map((r, i) => ({ ...r, fi: game.words[i].fi, it: game.words[i].it, icon: game.words[i].icon })),
   };
   if (game.mode === 'daily') {
     updateStreak(state, game.today);
@@ -162,6 +162,18 @@ function finishGame() {
 }
 
 // ---------- Piirtäminen ----------
+
+const ICON_MODES = ['none', 'some', 'all'];
+const ICON_LABELS = { none: 'Aa', some: '🍕Aa', all: '🍕' };
+const ICON_TOASTS = { none: 'Suomen sanat tekstinä', some: 'Osa suomen sanoista kuvakkeina', all: 'Kaikki mahdolliset suomen sanat kuvakkeina' };
+
+// Näytetäänkö sanan suomenkielinen laatta kuvakkeena. Osa-tilassa valinta on päiväkohtainen
+// mutta pysyvä, joten laatta ei vaihdu kesken pelin.
+function showIcon(word) {
+  if (!word.icon || state.icons === 'none') return false;
+  if (state.icons === 'all') return true;
+  return hashString(`${word.it}-${game.today}`) % 2 === 0;
+}
 
 const LAYER_SHIFT = 6;
 
@@ -198,10 +210,15 @@ function renderBoard() {
     el.style.width = `${w - 2}px`;
     el.style.height = `${h - 2}px`;
     el.style.zIndex = String(t.z * 1000 + t.y * 10 + t.x);
-    // Pienennetään fonttia, jos pisin sana ei muuten mahdu laatan leveyteen.
-    const longest = Math.max(...t.text.split(' ').map((s) => s.length));
-    el.style.fontSize = `${Math.max(10, Math.min(baseFont, (w - 14) / (longest * 0.62)))}px`;
-    el.innerHTML = `<span class="lang">${t.lang.toUpperCase()}</span><span class="word">${escapeHtml(t.text)}</span>`;
+    if (t.lang === 'fi' && showIcon(t.word)) {
+      el.style.fontSize = `${w * 0.42}px`;
+      el.innerHTML = `<span class="lang">FI</span><span class="word icon" role="img" aria-label="${escapeHtml(t.text)}">${t.word.icon}</span>`;
+    } else {
+      // Pienennetään fonttia, jos pisin sana ei muuten mahdu laatan leveyteen.
+      const longest = Math.max(...t.text.split(' ').map((s) => s.length));
+      el.style.fontSize = `${Math.max(10, Math.min(baseFont, (w - 14) / (longest * 0.62)))}px`;
+      el.innerHTML = `<span class="lang">${t.lang.toUpperCase()}</span><span class="word">${escapeHtml(t.text)}</span>`;
+    }
     el.addEventListener('click', () => onTileClick(t));
     boardEl.append(el);
   }
@@ -274,7 +291,7 @@ function showSummary(summary, mode) {
       <li class="${w.outcome}">
         <span class="mark">${w.outcome === 'clean' ? '✓' : w.outcome === 'hint' ? '💡' : '✗'}</span>
         <span class="it">${escapeHtml(w.it)}</span>
-        <span class="fi">${escapeHtml(w.fi)}</span>
+        <span class="fi">${w.icon ? `${w.icon} ` : ''}${escapeHtml(w.fi)}</span>
         ${speechSupported ? `<button class="say" type="button" data-say="${escapeHtml(w.it)}" aria-label="Kuuntele ${escapeHtml(w.it)}">🔊</button>` : ''}
       </li>`)
     .join('');
@@ -302,6 +319,7 @@ function showHelp() {
       <li>Vain <b>vapaita</b> laattoja voi valita: niiden päällä ei ole toista laattaa ja vasen tai oikea sivu on tyhjä. Peitetyt laatat näkyvät tummempina.</li>
       <li>Oikea pari poistuu, ja alta paljastuu uusia laattoja.</li>
       <li>Väärästä parista näet oikeat käännökset, ja sanat palaavat pian kertaukseen.</li>
+      <li>Osa suomen sanoista voi näkyä kuvakkeina (🍕 = pizza). Yläpalkin 🍕Aa-nappi vaihtaa: teksti, osa kuvakkeina tai kaikki kuvakkeina.</li>
       <li>Ääntämisen saa pois 🔊-napista oikeasta yläkulmasta. Uusi napautus keskeyttää lausunnan.</li>
       <li>Päivän pöytä vaihtuu joka päivä. Pelaa päivittäin, niin putki 🔥 kasvaa.</li>
     </ul>
@@ -392,6 +410,20 @@ function updateSoundButton() {
   btn.setAttribute('aria-pressed', String(state.sound));
 }
 
+function updateIconButton() {
+  const btn = $('icon-btn');
+  btn.textContent = ICON_LABELS[state.icons];
+  btn.title = ICON_TOASTS[state.icons];
+}
+
+$('icon-btn').addEventListener('click', () => {
+  state.icons = ICON_MODES[(ICON_MODES.indexOf(state.icons) + 1) % ICON_MODES.length];
+  saveState(localStorage, state);
+  updateIconButton();
+  if (game && !game.done) renderBoard();
+  showToast(ICON_TOASTS[state.icons], 'info', 1600);
+});
+
 function updateStreakLabel() {
   $('streak').textContent = `🔥 ${currentStreak(state, todayStr())}`;
 }
@@ -416,7 +448,8 @@ window.addEventListener('resize', () => {
 });
 
 function pairLine(word) {
-  return `<span class="pair"><b>${escapeHtml(word.fi)}</b> = <b>${escapeHtml(word.it)}</b></span>`;
+  const icon = word.icon ? `${word.icon} ` : '';
+  return `<span class="pair">${icon}<b>${escapeHtml(word.fi)}</b> = <b>${escapeHtml(word.it)}</b></span>`;
 }
 
 function escapeHtml(s) {
@@ -428,6 +461,7 @@ if (!speechSupported) {
   $('sound-btn').title = 'Selain ei tue puhesynteesiä';
 }
 updateSoundButton();
+updateIconButton();
 updateStreakLabel();
 $('version').textContent = `Tessere v${VERSION}`;
 

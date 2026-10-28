@@ -74,7 +74,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
   letter-spacing: 0.02em;
 }
 
-.topbar-right { display: flex; align-items: center; gap: 10px; }
+.topbar-right { display: flex; align-items: center; gap: 8px; }
+.icon-btn.icon-mode { width: auto; min-width: 40px; padding: 0 8px; font-size: 0.85rem; font-weight: 700; }
+.tile .word.icon { line-height: 1; text-shadow: none; }
 .icon-btn.streak { width: auto; padding: 0 12px; font-weight: 600; font-size: 1rem; }
 
 .icon-btn {

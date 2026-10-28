@@ -13,6 +13,8 @@ sivun pitää olla tyhjä. Oikea pari poistuu, ja alta paljastuu uusia laattoja.
 - **Jaksotettu kertaus:** noin 40 % sanoista on kertaukseen erääntyneitä, loput uusia.
   Virheellä tehty sana palaa kertaukseen seuraavana päivänä, virheetön siirtyy yhä pidemmälle
   (1 → 3 → 7 → 14 → 30 → 60 päivää).
+- **Kuvakkeet 🍕:** noin 80 sanalla on kuvake, joka voi korvata suomenkielisen sanan laatalla.
+  Yläpalkin nappi vaihtaa tilaa: teksti (Aa), osa kuvakkeina (🍕Aa) tai kaikki kuvakkeina (🍕).
 - **Väärä pari** näyttää molempien laattojen oikeat käännökset.
 - **Ääntäminen** selaimen italiankielisellä puhesynteesillä. Sen saa pois 🔊-napista, ja seuraava
   napautus keskeyttää lausunnan.
@@ -41,7 +43,7 @@ Puhelimella kokeiltaessa helpointa on julkaista repositorio **GitHub Pagesissa**
 
 | Tiedosto | Sisältö |
 |---|---|
-| `js/words.js` | Sanasto (noin 120 paria teemoittain) |
+| `js/words.js` | Sanasto (noin 120 paria teemoittain, valinnainen kuvake) |
 | `js/layout.js` | Pöytämuodot: laattojen paikat ja kerrokset (`?layout=Portaat` pakottaa muodon) |
 | `js/board.js` | Vapaat laatat, parit ja ratkaistavan pöydän generointi |
 | `js/progress.js` | Kertausalgoritmi, päiväputki, historia ja tallennus |
@@ -52,6 +54,6 @@ Puhelimella kokeiltaessa helpointa on julkaista repositorio **GitHub Pagesissa**
 ## Jatkoideoita
 
 - Lisää pöytämuotoja (pyramidi, Colosseum) ja teemapöytiä
-- Kuva/emoji ↔ italia -laatat, verbien taivutusparit, artikkelipelit (*il / la*)
+- Verbien taivutusparit, artikkelipelit (*il / la*)
 - Harhautuslaatat ja "väärät ystävät" (*la camera* = huone)
 - Muistutusilmoitus illalla (vaatii push-palvelimen tai kalenterimuistutuksen)
