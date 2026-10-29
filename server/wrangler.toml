@@ -6,4 +6,4 @@ compatibility_date = "2026-10-01"
 # ja kopioi sen id alle. (Web-käyttöliittymässä: Storage & Databases → KV → Create.)
 [[kv_namespaces]]
 binding = "SCORES"
-id = "KORVAA_TÄMÄ_KV_ID"
+id = "0f08418b9d25414eab3c031b2f8e0f8a"
