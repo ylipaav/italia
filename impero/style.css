@@ -287,3 +287,7 @@ body[data-era="moderna"] { --accent: #2a7a3f; --sky: linear-gradient(#d6ead9, #f
 .summary .res b { color: var(--ok); }
 .help { padding-left: 18px; line-height: 1.5; }
 .help li { margin-bottom: 6px; }
+
+.name-form { display: flex; gap: 8px; margin-top: 12px; }
+.name-form input { flex: 1; min-width: 0; min-height: 46px; padding: 0 12px; border-radius: 12px; border: 1px solid var(--edge); background: var(--bg); color: inherit; font: inherit; }
+.name-form .btn { flex: 0 0 auto; padding: 0 18px; }

@@ -11,6 +11,7 @@ import {
 } from './game.js';
 import { VERSION } from './version.js';
 import { profileStorage, activeProfile } from '../../shared/store.js';
+import { showNameGate } from '../../shared/namegate.js';
 import { submitScore } from '../../shared/board.js';
 
 const $ = (id) => document.getElementById(id);
@@ -510,7 +511,8 @@ if (claimTessereBonus(state, loadJson(store, 'tessere.v1', {}).history, todayStr
 }
 save();
 renderAll();
-if (firstVisit) showHelp();
+if (showNameGate(localStorage, openSheet)) pendingEvent = { gate: true }; // estää paneelin sulkemisen
+else if (firstVisit) showHelp();
 
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
   navigator.serviceWorker.register('sw.js').catch(() => {});

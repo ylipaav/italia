@@ -6,6 +6,7 @@ import {
 } from './shared/store.js';
 import { loadBoardConfig, saveBoardConfig, boardReady, fetchBoard, pingBoard, DEFAULT_BOARD_URL, DEFAULT_GROUP } from './shared/board.js';
 import { todayStr } from './shared/srs.js';
+import { showNameGate } from './shared/namegate.js';
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -155,3 +156,7 @@ $('board-save').addEventListener('click', async () => {
 });
 
 render();
+showNameGate(localStorage, (html) => {
+  $('gate-sheet').innerHTML = html;
+  $('gate').hidden = false;
+});

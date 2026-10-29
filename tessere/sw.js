@@ -1,5 +1,5 @@
 // Offline-tuki: sovelluksen tiedostot välimuistiin. Nosta versiota, kun tiedostot muuttuvat.
-const CACHE = 'tessere-v0.6.2';
+const CACHE = 'tessere-v0.7.0';
 const FILES = [
   './',
   'index.html',
@@ -16,6 +16,7 @@ const FILES = [
   '../shared/srs.js',
   '../shared/store.js',
   '../shared/board.js',
+  '../shared/namegate.js',
   'js/version.js',
   'js/stats.js',
 ];

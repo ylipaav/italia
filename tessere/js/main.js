@@ -8,6 +8,7 @@ import {
 import { speak, stopSpeech, speechSupported } from '../../shared/speech.js';
 import { VERSION } from './version.js';
 import { profileStorage, activeProfile } from '../../shared/store.js';
+import { showNameGate } from '../../shared/namegate.js';
 import { submitScore } from '../../shared/board.js';
 import {
   puzzleNumber, computeStats, wordStats, calendarWeeks, sequenceEmoji, shareText, formatTime,
@@ -476,7 +477,9 @@ updateIconButton();
 updateStreakLabel();
 $('version').textContent = `Tessere v${VERSION} · ${activeProfile(localStorage).name}`;
 
-if (state.daily?.date === todayStr()) {
+if (showNameGate(localStorage, openOverlay)) {
+  // Nimi kysytään ennen ensimmäistä peliä; sivu latautuu uudelleen tallennuksen jälkeen.
+} else if (state.daily?.date === todayStr()) {
   showSummary(state.daily, 'daily');
 } else {
   startGame('daily');

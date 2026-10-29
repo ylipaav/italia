@@ -375,3 +375,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   background: var(--tile-blocked);
 }
 .bar span { display: block; height: 100%; transition: width 0.3s; }
+
+.name-form { display: flex; gap: 8px; margin-top: 12px; }
+.name-form input { flex: 1; min-width: 0; min-height: 46px; padding: 0 12px; border-radius: 12px; border: 1px solid var(--tile-edge); background: var(--bg); color: inherit; font: inherit; }
+.name-form .btn { flex: 0 0 auto; padding: 0 18px; }

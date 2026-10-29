@@ -29,7 +29,7 @@ function write(storage, key, value) {
 export function loadProfiles(storage) {
   const p = read(storage, PROFILES_KEY, null);
   if (p?.list?.length && p.list.some((x) => x.id === p.active)) return p;
-  return { active: DEFAULT_PROFILE, list: [{ id: DEFAULT_PROFILE, name: 'Pelaaja' }] };
+  return { active: DEFAULT_PROFILE, list: [{ id: DEFAULT_PROFILE, name: 'Pelaaja', named: false }] };
 }
 
 export function saveProfiles(storage, profiles) {
@@ -58,7 +58,7 @@ export function activeProfile(storage) {
 export function addProfile(storage, name) {
   const p = loadProfiles(storage);
   const id = `p${Date.now().toString(36)}${Math.floor(Math.random() * 1e6).toString(36)}`;
-  p.list.push({ id, name: name.trim() || `Pelaaja ${p.list.length + 1}` });
+  p.list.push({ id, name: name.trim() || `Pelaaja ${p.list.length + 1}`, named: Boolean(name.trim()) });
   p.active = id;
   saveProfiles(storage, p);
   return id;
@@ -67,8 +67,17 @@ export function addProfile(storage, name) {
 export function renameProfile(storage, id, name) {
   const p = loadProfiles(storage);
   const x = p.list.find((y) => y.id === id);
-  if (x && name.trim()) x.name = name.trim();
+  if (x && name.trim()) {
+    x.name = name.trim();
+    x.named = true;
+  }
   saveProfiles(storage, p);
+}
+
+// Pelaajalta kysytään nimi ennen ensimmäistä peliä, jotta tulostaululla ei ole "Pelaaja"-rivejä.
+export function needsName(storage) {
+  const p = activeProfile(storage);
+  return !p.named && p.name === 'Pelaaja';
 }
 
 export function switchProfile(storage, id) {

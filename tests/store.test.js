@@ -69,3 +69,18 @@ test('virheellinen koodi hylätään selkeällä viestillä', () => {
   assert.throws(() => parseExport('ITALIA1.!!!'), /vioittunut/);
   assert.throws(() => parseExport('ITALIA1.' + btoa('{"v":1,"data":{"evil":1}}')), /Tuntematon sisältö/);
 });
+
+test('nimi kysytään, kunnes pelaaja on antanut sen', async () => {
+  const { needsName } = await import('../shared/store.js');
+  const s = fakeStorage();
+  assert.equal(needsName(s), true, 'uusi laite');
+  s.setItem('italia.profiles.v1', JSON.stringify({ active: 'default', list: [{ id: 'default', name: 'Pelaaja' }] }));
+  assert.equal(needsName(s), true, 'vanha tallennus ilman nimeä');
+  renameProfile(s, 'default', 'Marko');
+  assert.equal(needsName(s), false);
+  const id = addProfile(s, '');
+  assert.equal(needsName(s), false, 'automaattinen nimi "Pelaaja 2" ei ole "Pelaaja"');
+  switchProfile(s, id);
+  addProfile(s, 'Anna');
+  assert.equal(needsName(s), false);
+});
