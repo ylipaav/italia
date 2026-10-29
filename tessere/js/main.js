@@ -314,6 +314,9 @@ function showSummary(summary, mode) {
       <button class="btn" type="button" data-action="stats">📊 Tilastot</button>
       <button class="btn primary" type="button" data-action="practice">Harjoittele</button>
     </div>
+    <div class="actions">
+      <a class="btn link" href="../">‹ Valikko</a>
+    </div>
     <p class="note">Uusi päivän pöytä huomenna. Virheelliset sanat tulevat kertaukseen pian.</p>
   `);
 }
@@ -374,6 +377,7 @@ function showStats() {
       ${played ? '<button class="btn" type="button" data-action="share">📤 Jaa päivän tulos</button>' : ''}
       <button class="btn primary" type="button" data-action="${played ? 'summary' : 'close'}">${played ? 'Takaisin' : 'Sulje'}</button>
     </div>
+    ${played ? '<div class="actions"><a class="btn link" href="../">‹ Valikko</a></div>' : ''}
   `);
 }
 
