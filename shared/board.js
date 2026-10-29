@@ -6,7 +6,7 @@ import { activeProfile } from './store.js';
 
 export const BOARD_KEY = 'italia.board.v1';
 // Oletusosoite voidaan asettaa tähän julkaisun jälkeen, jolloin pelaajien ei tarvitse kirjoittaa sitä.
-export const DEFAULT_BOARD_URL = '';
+export const DEFAULT_BOARD_URL = 'https://italia-board.marko-1a4.workers.dev';
 
 export function loadBoardConfig(storage) {
   try {

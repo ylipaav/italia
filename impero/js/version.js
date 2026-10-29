@@ -1,2 +1,2 @@
 // Näkyy sivun alalaidassa. Nosta myös sw.js:n välimuistin nimi.
-export const VERSION = '0.3.0';
+export const VERSION = '0.3.1';
