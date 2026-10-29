@@ -1,4 +1,40 @@
-# Tessere 🇮🇹
+# Italia 🇮🇹 – pelejä italian opiskeluun
+
+Kaksi puhelimella pelattavaa PWA-peliä, jotka jakavat saman sanaston ja saman kertaustilan:
+yhdessä pelissä opittu sana kertautuu toisessa.
+
+| Kansio | Peli |
+|---|---|
+| `impero/` | **Impero** – rakenna Rooma vuoro vuorolta. Oikeat vastaukset tuottavat 🌾 🔨 📜 💰. |
+| `tessere/` | **Tessere** – päivän Mahjong-pöytä suomi–italia-sanapareilla. |
+| `shared/` | Sanasto kuvakkeineen, jaksotettu kertaus (`srs.js`), satunnaisluvut ja ääntäminen. |
+| `index.html` | Aloitussivu, josta pelit valitaan. |
+
+```sh
+npm start        # http://localhost:8080
+npm test         # yksikkötestit (Node 20+)
+```
+
+Julkaisu: GitHub Pages (Settings → Pages → Deploy from branch) toimii sellaisenaan, koska
+käännösvaihetta ei ole. Service workerit ja kotinäyttöön lisääminen vaativat HTTPS:n.
+
+## Impero 🏛️
+
+Civilization-henkinen rakentelupeli, jossa italian osaaminen on kaupungin tuotantovoima.
+
+- **3 vuoroa päivässä**, kussakin kuusi tehtävää: suomi → italia, kuvake → italia ja tutkimusten
+  myötä italia → suomi, kuuntelu ja artikkelit (*il, la, lo, l'*).
+- **Resurssit** sanan aiheen mukaan: ruokasanat 🌾, kodin ja tekemisen sanat 🔨, numerot, värit ja
+  aika 📜, matkustus ja ihmiset 💰. Vuoron sanat hajautetaan niin, että kaikkia kertyy.
+- **Rakennukset** (Foro, Granaio, Mercato, Tempio, Biblioteca, Acquedotto, Terme, Anfiteatro ja
+  ihmeet Colosseo ja Pantheon) tuottavat joka vuoro, kasvattavat väestöä 👥 tai tuovat gloriaa ⭐.
+- **Kielioppipuu** 📜: L'alfabeto → L'ascolto / Gli articoli → Il commercio / L'agricoltura.
+- **Väestö** kasvaa ruoasta, ja isompi kaupunki tuottaa enemmän joka vastauksesta.
+- **Tessere-bonus** 🀄: päivän Tessere-pöytä antaa kerran päivässä +4 kaikkiin resursseihin.
+- Tiedostot: `impero/js/data.js` (rakennukset, tutkimukset), `game.js` (logiikka, testattu),
+  `main.js` (käyttöliittymä).
+
+## Tessere 🀄
 
 Päivittäinen Mahjong-pasianssin tyylinen laattapeli italian sanaston opiskeluun puhelimella.
 
@@ -27,31 +63,21 @@ sivun pitää olla tyhjä. Oikea pari poistuu, ja alta paljastuu uusia laattoja.
 - PWA: lisättävissä puhelimen aloitusnäytölle, toimii myös ilman verkkoa.
 - Edistyminen tallentuu selaimen `localStorage`en, joten palvelinta ei tarvita.
 
-## Käynnistys
-
-Tiedostot ovat tavallista HTML:ää, CSS:ää ja JavaScript-moduuleja ilman käännösvaihetta.
-
-```sh
-npm start        # http://localhost:8080
-npm test         # yksikkötestit (Node 20+)
-```
-
-Puhelimella kokeiltaessa helpointa on julkaista repositorio **GitHub Pagesissa**
-(Settings → Pages → Deploy from branch). Service worker ja kotinäyttöön lisääminen vaativat HTTPS:n.
-
-## Rakenne
+### Tesseren rakenne
 
 | Tiedosto | Sisältö |
 |---|---|
-| `js/words.js` | Sanasto (noin 120 paria teemoittain, valinnainen kuvake) |
-| `js/layout.js` | Pöytämuodot: laattojen paikat ja kerrokset (`?layout=Portaat` pakottaa muodon) |
-| `js/board.js` | Vapaat laatat, parit ja ratkaistavan pöydän generointi |
-| `js/progress.js` | Kertausalgoritmi, päiväputki, historia ja tallennus |
-| `js/stats.js` | Tilastot, kalenteri ja jakoteksti |
-| `js/speech.js` | Ääntäminen |
-| `js/main.js` | Käyttöliittymä |
+| `shared/words.js` | Sanasto (noin 120 paria teemoittain, valinnainen kuvake) |
+| `tessere/js/layout.js` | Pöytämuodot: laattojen paikat ja kerrokset (`?layout=Portaat` pakottaa muodon) |
+| `tessere/js/board.js` | Vapaat laatat, parit ja ratkaistavan pöydän generointi |
+| `tessere/js/progress.js` | Päiväputki, historia ja tallennus (kertaus: `shared/srs.js`) |
+| `tessere/js/stats.js` | Tilastot, kalenteri ja jakoteksti |
+| `shared/speech.js` | Ääntäminen |
+| `tessere/js/main.js` | Käyttöliittymä |
 
 ## Jatkoideoita
+
+- Impero: Italian kartta ja uudet kaupungit, tapahtumat, verbien taivutus kielioppipuuhun
 
 - Lisää pöytämuotoja (pyramidi, Colosseum) ja teemapöytiä
 - Verbien taivutusparit, artikkelipelit (*il / la*)

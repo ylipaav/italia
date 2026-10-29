@@ -1,0 +1,15 @@
+{
+  "name": "Impero – rakenna Rooma italiaksi",
+  "short_name": "Impero",
+  "description": "Rakenna Rooma vuoro vuorolta italiaa oppimalla.",
+  "lang": "fi",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f3e9d6",
+  "theme_color": "#7a4a1e",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
