@@ -20,6 +20,14 @@ export const THEME_RESOURCE = {
   Matkustus: 'gold',
   Tervehdykset: 'gold',
   Ihmiset: 'gold',
+  Fraasit: 'gold',
+  Kaupunki: 'gold',
+  Vaatteet: 'gold',
+  Ravintola: 'food',
+  Luonto: 'food',
+  Terveys: 'science',
+  Työ: 'prod',
+  Tunteet: 'prod',
 };
 
 // ---------- Aikakaudet ----------
@@ -36,19 +44,19 @@ export const ERAS = [
 // x, y: sijainti kartalla (viewBox 0 0 100 130). theme: tutkimusmatkan tehtävien aihe.
 // bonusTheme: tämän aiheen sanat tuottavat +1. income: tuotto joka vuoro. sea: vaatii La navigazione.
 export const REGIONS = [
-  { id: 'lazio', name: 'Lazio', city: 'Roma', x: 55, y: 64, theme: 'Tervehdykset', start: true, neighbors: ['toscana', 'umbria', 'campania', 'sardegna'] },
+  { id: 'lazio', name: 'Lazio', city: 'Roma', x: 55, y: 64, theme: 'Fraasit', start: true, neighbors: ['toscana', 'umbria', 'campania', 'sardegna'] },
   { id: 'toscana', name: 'Toscana', city: 'Firenze', x: 44, y: 44, theme: 'Adjektiivit', cost: { food: 15, gold: 15 }, income: { science: 1 }, neighbors: ['liguria', 'emilia', 'umbria', 'lazio'], desc: 'Renessanssin kehto. +1 📜 joka vuoro.' },
-  { id: 'umbria', name: 'Umbria', city: 'Perugia', x: 57, y: 51, theme: 'Aika', cost: { food: 12, gold: 10 }, bonusTheme: 'Aika', neighbors: ['toscana', 'emilia', 'lazio'], desc: 'Italian vihreä sydän. Ajan sanat tuottavat +1 📜.' },
+  { id: 'umbria', name: 'Umbria', city: 'Perugia', x: 57, y: 51, theme: 'Luonto', cost: { food: 12, gold: 10 }, bonusTheme: 'Aika', neighbors: ['toscana', 'emilia', 'lazio'], desc: 'Italian vihreä sydän. Ajan sanat tuottavat +1 📜.' },
   { id: 'campania', name: 'Campania', city: 'Napoli', x: 69, y: 75, theme: 'Ruoka', cost: { food: 15, gold: 12 }, bonusTheme: 'Ruoka', neighbors: ['lazio', 'puglia', 'calabria'], desc: 'Pizzan kotikaupunki. Ruokasanat tuottavat +1 🌾.' },
-  { id: 'emilia', name: 'Emilia-Romagna', city: 'Bologna', x: 47, y: 30, theme: 'Verbit', cost: { food: 20, gold: 18 }, bonusTheme: 'Verbit', neighbors: ['lombardia', 'veneto', 'liguria', 'toscana', 'umbria'], desc: 'Euroopan vanhin yliopisto. Verbit tuottavat +1 🔨.' },
+  { id: 'emilia', name: 'Emilia-Romagna', city: 'Bologna', x: 47, y: 30, theme: 'Työ', cost: { food: 20, gold: 18 }, bonusTheme: 'Verbit', neighbors: ['lombardia', 'veneto', 'liguria', 'toscana', 'umbria'], desc: 'Euroopan vanhin yliopisto. Verbit tuottavat +1 🔨.' },
   { id: 'liguria', name: 'Liguria', city: 'Genova', x: 28, y: 32, theme: 'Matkustus', cost: { food: 18, gold: 20 }, income: { gold: 1 }, neighbors: ['piemonte', 'lombardia', 'emilia', 'toscana'], desc: 'Merenkulkijoiden satama. +1 💰 joka vuoro.' },
-  { id: 'puglia', name: 'Puglia', city: 'Bari', x: 88, y: 72, theme: 'Ruoka', cost: { food: 22, gold: 15 }, income: { food: 1 }, neighbors: ['campania', 'calabria'], desc: 'Oliivilehtojen maa. +1 🌾 joka vuoro.' },
-  { id: 'lombardia', name: 'Lombardia', city: 'Milano', x: 35, y: 16, theme: 'Värit', cost: { food: 25, gold: 30 }, income: { gold: 2 }, neighbors: ['piemonte', 'veneto', 'emilia', 'liguria'], desc: 'Muodin ja kaupan pääkaupunki. +2 💰 joka vuoro.' },
+  { id: 'puglia', name: 'Puglia', city: 'Bari', x: 88, y: 72, theme: 'Ravintola', cost: { food: 22, gold: 15 }, income: { food: 1 }, neighbors: ['campania', 'calabria'], desc: 'Oliivilehtojen maa. +1 🌾 joka vuoro.' },
+  { id: 'lombardia', name: 'Lombardia', city: 'Milano', x: 35, y: 16, theme: 'Vaatteet', cost: { food: 25, gold: 30 }, income: { gold: 2 }, neighbors: ['piemonte', 'veneto', 'emilia', 'liguria'], desc: 'Muodin ja kaupan pääkaupunki. +2 💰 joka vuoro.' },
   { id: 'veneto', name: 'Veneto', city: 'Venezia', x: 56, y: 16, theme: 'Numerot', cost: { food: 25, gold: 30 }, bonusTheme: 'Matkustus', neighbors: ['lombardia', 'emilia'], desc: 'Kauppiaiden tasavalta. Matkustussanat tuottavat +1 💰.' },
   { id: 'piemonte', name: 'Piemonte', city: 'Torino', x: 18, y: 18, theme: 'Koti', cost: { food: 25, gold: 25 }, income: { prod: 1 }, neighbors: ['lombardia', 'liguria'], desc: 'Alppien juurella. +1 🔨 joka vuoro.' },
-  { id: 'calabria', name: 'Calabria', city: 'Reggio Calabria', x: 82, y: 98, theme: 'Ihmiset', cost: { food: 25, gold: 20 }, bonusTheme: 'Ihmiset', neighbors: ['campania', 'puglia', 'sicilia'], desc: 'Saappaan kärki. Ihmisten sanat tuottavat +1 💰.' },
-  { id: 'sicilia', name: 'Sicilia', city: 'Palermo', x: 66, y: 112, theme: 'Matkustus', cost: { food: 30, gold: 35 }, sea: true, income: { food: 1, gold: 1 }, neighbors: ['calabria'], desc: 'Välimeren risteys. +1 🌾 ja +1 💰 joka vuoro.' },
-  { id: 'sardegna', name: 'Sardegna', city: 'Cagliari', x: 22, y: 80, theme: 'Koti', cost: { food: 30, gold: 30 }, sea: true, income: { prod: 2 }, neighbors: ['lazio'], desc: 'Nuraghien saari. +2 🔨 joka vuoro.' },
+  { id: 'calabria', name: 'Calabria', city: 'Reggio Calabria', x: 82, y: 98, theme: 'Tunteet', cost: { food: 25, gold: 20 }, bonusTheme: 'Ihmiset', neighbors: ['campania', 'puglia', 'sicilia'], desc: 'Saappaan kärki. Ihmisten sanat tuottavat +1 💰.' },
+  { id: 'sicilia', name: 'Sicilia', city: 'Palermo', x: 66, y: 112, theme: 'Kaupunki', cost: { food: 30, gold: 35 }, sea: true, income: { food: 1, gold: 1 }, neighbors: ['calabria'], desc: 'Välimeren risteys. +1 🌾 ja +1 💰 joka vuoro.' },
+  { id: 'sardegna', name: 'Sardegna', city: 'Cagliari', x: 22, y: 80, theme: 'Terveys', cost: { food: 30, gold: 30 }, sea: true, income: { prod: 2 }, neighbors: ['lazio'], desc: 'Nuraghien saari. +2 🔨 joka vuoro.' },
 ];
 
 export const EXPEDITION_QUESTIONS = 6;

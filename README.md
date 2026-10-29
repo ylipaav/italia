@@ -7,7 +7,7 @@ yhdessä pelissä opittu sana kertautuu toisessa.
 |---|---|
 | `impero/` | **Impero** – rakenna Rooma vuoro vuorolta. Oikeat vastaukset tuottavat 🌾 🔨 📜 💰. |
 | `tessere/` | **Tessere** – päivän Mahjong-pöytä suomi–italia-sanapareilla. |
-| `shared/` | Sanasto kuvakkeineen, jaksotettu kertaus (`srs.js`), satunnaisluvut ja ääntäminen. |
+| `shared/` | Sanasto (~530 sanaa) kuvakkeineen, kielioppi, jaksotettu kertaus (`srs.js`), satunnaisluvut ja ääntäminen. |
 | `index.html` + `launcher.js` | Aloitussivu: pelivalinta, tulostaulu, pelaajaprofiilit ja varmuuskopiot. |
 | `server/` | Tulostaulun Cloudflare Worker (valinnainen), ks. `server/README.md`. |
 
@@ -99,7 +99,7 @@ sivun pitää olla tyhjä. Oikea pari poistuu, ja alta paljastuu uusia laattoja.
 
 | Tiedosto | Sisältö |
 |---|---|
-| `shared/words.js` | Sanasto (noin 120 paria teemoittain, valinnainen kuvake) |
+| `shared/words.js` | Sanasto (noin 530 sanaa 18 teemassa, 55 %:lla kuvake) |
 | `tessere/js/layout.js` | Pöytämuodot: laattojen paikat ja kerrokset (`?layout=Portaat` pakottaa muodon) |
 | `tessere/js/board.js` | Vapaat laatat, parit ja ratkaistavan pöydän generointi |
 | `tessere/js/progress.js` | Päiväputki, historia ja tallennus (kertaus: `shared/srs.js`) |

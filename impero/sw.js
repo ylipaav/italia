@@ -1,5 +1,5 @@
 // Offline-tuki: sovelluksen tiedostot välimuistiin. Nosta versiota, kun tiedostot muuttuvat.
-const CACHE = 'impero-v0.4.2';
+const CACHE = 'impero-v0.5.0';
 const FILES = [
   './',
   'index.html',
