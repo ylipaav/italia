@@ -1,12 +1,17 @@
-// Aloitussivu: pelaajaprofiilit ja varmuuskopiot (vie / tuo).
+// Aloitussivu: pelaajaprofiilit, varmuuskopiot (vie / tuo) ja tulostaulu.
 
 import {
   loadProfiles, addProfile, switchProfile, renameProfile, deleteProfile,
-  exportProfile, parseExport, importProfile, describeExport,
+  exportProfile, parseExport, importProfile, describeExport, activeProfile,
 } from './shared/store.js';
+import { loadBoardConfig, saveBoardConfig, boardReady, fetchBoard, pingBoard } from './shared/board.js';
+import { todayStr } from './shared/srs.js';
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+const fmtTime = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+
+// ---------- Pelaajat ----------
 
 function render() {
   const p = loadProfiles(localStorage);
@@ -20,6 +25,8 @@ function render() {
     </li>`).join('');
   $('export-code').value = '';
   $('import-status').textContent = '';
+  renderBoardSettings();
+  renderBoard();
 }
 
 $('profiles').addEventListener('click', (e) => {
@@ -46,6 +53,8 @@ $('add-profile').addEventListener('click', () => {
   addProfile(localStorage, name);
   render();
 });
+
+// ---------- Varmuuskopio ----------
 
 $('export-btn').addEventListener('click', async () => {
   const code = exportProfile(localStorage, loadProfiles(localStorage).active);
@@ -92,6 +101,62 @@ $('import-btn').addEventListener('click', () => {
     status.className = 'status bad';
     status.textContent = err.message;
   }
+});
+
+// ---------- Tulostaulu ----------
+
+function renderBoardSettings() {
+  const c = loadBoardConfig(localStorage);
+  $('board-url').value = c.url;
+  $('board-group').value = c.group;
+  $('board-enabled').checked = c.enabled;
+  $('board-name').textContent = activeProfile(localStorage).name;
+}
+
+async function renderBoard() {
+  const c = loadBoardConfig(localStorage);
+  const view = $('board-view');
+  const me = activeProfile(localStorage).name;
+  if (!c.url || !c.group) {
+    view.innerHTML = '<p class="empty">Tulostaulu ei ole käytössä. Avaa asetukset ja anna palvelimen osoite ja ryhmäkoodi.</p>';
+    $('board-settings').open = true;
+    return;
+  }
+  view.innerHTML = '<p class="empty">Haetaan…</p>';
+  try {
+    const [t, i] = await Promise.all([fetchBoard(localStorage, 'tessere', { date: todayStr() }), fetchBoard(localStorage, 'impero')]);
+    const row = (name, cells) => `<tr class="${name === me ? 'me' : ''}"><td>${esc(name)}</td>${cells.map((x) => `<td class="num">${x}</td>`).join('')}</tr>`;
+    const tessere = t.rows.length
+      ? `<table class="board"><tr><th>Pelaaja</th><th>Aika</th><th>Virheet</th><th>Pöytä</th></tr>${t.rows.map((r) => row(r.name, [fmtTime(r.seconds), r.mistakes, esc(r.layout || '')])).join('')}</table>`
+      : '<p class="empty">Kukaan ryhmässä ei ole vielä pelannut päivän pöytää.</p>';
+    const impero = i.rows.length
+      ? `<table class="board"><tr><th>Pelaaja</th><th>⭐</th><th>👥</th><th>🏗️</th><th>📜</th></tr>${i.rows.map((r) => row(r.name, [r.gloria, r.pop, r.buildings, r.techs])).join('')}</table>`
+      : '<p class="empty">Ei vielä Impero-tuloksia ryhmässä.</p>';
+    view.innerHTML = `<p class="board-title">🀄 Tessere tänään</p>${tessere}<p class="board-title">🏛️ Impero</p>${impero}`
+      + (c.enabled ? '' : '<p class="empty">Omia tuloksiasi ei lähetetä. Ruksi lähetys asetuksista.</p>');
+  } catch (err) {
+    view.innerHTML = `<p class="empty">Tulostaulua ei saatu haettua (${esc(err.message)}). Tarkista osoite ja verkkoyhteys.</p>`;
+  }
+}
+
+$('board-save').addEventListener('click', async () => {
+  const status = $('board-status');
+  const c = { url: $('board-url').value.trim(), group: $('board-group').value.trim(), enabled: $('board-enabled').checked };
+  if (c.url) {
+    status.className = 'status';
+    status.textContent = 'Tarkistetaan palvelinta…';
+    try {
+      if (!(await pingBoard(c.url))) throw new Error();
+    } catch {
+      status.className = 'status bad';
+      status.textContent = 'Osoitteesta ei vastannut Italia-tulostaulu. Tarkista osoite.';
+      return;
+    }
+  }
+  saveBoardConfig(localStorage, c);
+  status.className = 'status ok';
+  status.textContent = boardReady(c) ? 'Tallennettu. Tulokset lähetetään tästä lähtien.' : 'Tallennettu.';
+  renderBoard();
 });
 
 render();

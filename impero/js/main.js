@@ -9,6 +9,7 @@ import {
 } from './game.js';
 import { VERSION } from './version.js';
 import { profileStorage, activeProfile } from '../../shared/store.js';
+import { submitScore } from '../../shared/board.js';
 
 const $ = (id) => document.getElementById(id);
 const overlayEl = $('overlay');
@@ -109,6 +110,9 @@ function finishTurn() {
   const { income, grown } = endTurn(state, turn, progress, today);
   const bonus = claimTessereBonus(state, loadJson(store, 'tessere.v1', {}).history, today);
   save();
+  submitScore(localStorage, 'impero', {
+    gloria: gloria(state), pop: state.pop, buildings: state.buildings.length, techs: state.techs.length, turns: state.turns,
+  });
   renderCity(Object.keys(RESOURCES));
   const right = turn.results.filter((r) => r.outcome === 'clean').length;
   const chips = Object.entries(RESOURCES)

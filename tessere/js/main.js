@@ -8,6 +8,7 @@ import {
 import { speak, stopSpeech, speechSupported } from '../../shared/speech.js';
 import { VERSION } from './version.js';
 import { profileStorage, activeProfile } from '../../shared/store.js';
+import { submitScore } from '../../shared/board.js';
 import {
   puzzleNumber, computeStats, wordStats, calendarWeeks, sequenceEmoji, shareText, formatTime,
 } from './stats.js';
@@ -155,6 +156,10 @@ function finishGame() {
     state.daily = summary;
     const { words: _words, ...record } = summary;
     state.history[game.today] = record;
+    submitScore(localStorage, 'tessere', {
+      date: game.today, seconds: game.seconds, mistakes: game.mistakes, hints: game.hints,
+      pairs: game.words.length, layout: game.layout.name,
+    });
   } else {
     state.practice = (state.practice ?? 0) + 1;
   }

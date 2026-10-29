@@ -8,7 +8,8 @@ yhdessä pelissä opittu sana kertautuu toisessa.
 | `impero/` | **Impero** – rakenna Rooma vuoro vuorolta. Oikeat vastaukset tuottavat 🌾 🔨 📜 💰. |
 | `tessere/` | **Tessere** – päivän Mahjong-pöytä suomi–italia-sanapareilla. |
 | `shared/` | Sanasto kuvakkeineen, jaksotettu kertaus (`srs.js`), satunnaisluvut ja ääntäminen. |
-| `index.html` + `launcher.js` | Aloitussivu: pelivalinta, pelaajaprofiilit ja varmuuskopiot. |
+| `index.html` + `launcher.js` | Aloitussivu: pelivalinta, tulostaulu, pelaajaprofiilit ja varmuuskopiot. |
+| `server/` | Tulostaulun Cloudflare Worker (valinnainen), ks. `server/README.md`. |
 
 ```sh
 npm start        # http://localhost:8080
@@ -29,6 +30,13 @@ Kaikki tiedot ovat pelaajan selaimen `localStorage`ssa; palvelinta ei ole.
   kaikki tallennukset. *Tuo* korvaa valitun pelaajan tallennukset koodilla. Näin edistyminen
   siirtyy toiselle laitteelle tai palautuu selaimen tyhjennyksen jälkeen.
 - Toteutus: `shared/store.js` (testattu `tests/store.test.js`).
+
+## Tulostaulu (valinnainen) 🏆
+
+Eri puhelimilla pelaavien tulokset saa yhteiselle tulostaululle pienellä Cloudflare Workerilla
+(`server/`). Pelaajat antavat saman ryhmäkoodin, ja aloitussivu näyttää päivän Tessere-ajat ja
+Imperon tilanteen. Lähetys on pois päältä, kunnes pelaaja kytkee sen itse. Ilman palvelinta
+pelit toimivat täysin kuten ennen.
 
 ## Impero 🏛️
 

@@ -1,0 +1,9 @@
+name = "italia-board"
+main = "worker.js"
+compatibility_date = "2026-10-01"
+
+# Luo KV-varasto komennolla:  npx wrangler kv namespace create SCORES
+# ja kopioi sen id alle. (Web-käyttöliittymässä: Storage & Databases → KV → Create.)
+[[kv_namespaces]]
+binding = "SCORES"
+id = "KORVAA_TÄMÄ_KV_ID"
