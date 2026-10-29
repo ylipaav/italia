@@ -63,11 +63,14 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .topbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 6px;
   padding: 10px 16px 4px;
 }
 
+.back { color: var(--muted); text-decoration: none; font-size: 1.8rem; line-height: 1; padding: 0 8px 0 0; }
+
 .topbar h1 {
+  flex: 1;
   margin: 0;
   font-size: 1.35rem;
   color: var(--accent);

@@ -7,6 +7,7 @@ import {
 } from './progress.js';
 import { speak, stopSpeech, speechSupported } from '../../shared/speech.js';
 import { VERSION } from './version.js';
+import { profileStorage, activeProfile } from '../../shared/store.js';
 import {
   puzzleNumber, computeStats, wordStats, calendarWeeks, sequenceEmoji, shareText, formatTime,
 } from './stats.js';
@@ -17,7 +18,8 @@ const toastEl = $('toast');
 const overlayEl = $('overlay');
 const sheetEl = $('sheet');
 
-const state = loadState(localStorage);
+const store = profileStorage(localStorage);
+const state = loadState(store);
 let game = null;
 let timerId = null;
 let toastTimer = null;
@@ -156,7 +158,7 @@ function finishGame() {
   } else {
     state.practice = (state.practice ?? 0) + 1;
   }
-  saveState(localStorage, state);
+  saveState(store, state);
   updateStreakLabel();
   setTimeout(() => showSummary(summary, game.mode), 400);
 }
@@ -418,7 +420,7 @@ function updateIconButton() {
 
 $('icon-btn').addEventListener('click', () => {
   state.icons = ICON_MODES[(ICON_MODES.indexOf(state.icons) + 1) % ICON_MODES.length];
-  saveState(localStorage, state);
+  saveState(store, state);
   updateIconButton();
   if (game && !game.done) renderBoard();
   showToast(ICON_TOASTS[state.icons], 'info', 1600);
@@ -432,7 +434,7 @@ $('sound-btn').addEventListener('click', () => {
   state.sound = !state.sound;
   if (!state.sound) stopSpeech();
   else speak('Pronto!'); // kuuluu heti, jotta tietää toimiiko ääni
-  saveState(localStorage, state);
+  saveState(store, state);
   updateSoundButton();
   showToast(state.sound ? 'Ääntäminen päällä' : 'Ääntäminen pois', 'info', 1400);
 });
@@ -463,7 +465,7 @@ if (!speechSupported) {
 updateSoundButton();
 updateIconButton();
 updateStreakLabel();
-$('version').textContent = `Tessere v${VERSION}`;
+$('version').textContent = `Tessere v${VERSION} · ${activeProfile(localStorage).name}`;
 
 if (state.daily?.date === todayStr()) {
   showSummary(state.daily, 'daily');

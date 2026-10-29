@@ -8,21 +8,23 @@ import {
   foodForNextPop, startTurn, answer, turnDone, endTurn, claimTessereBonus,
 } from './game.js';
 import { VERSION } from './version.js';
+import { profileStorage, activeProfile } from '../../shared/store.js';
 
 const $ = (id) => document.getElementById(id);
 const overlayEl = $('overlay');
 const sheetEl = $('sheet');
 const toastEl = $('toast');
 
-const state = loadState(localStorage);
-const progress = loadWordProgress(localStorage);
+const store = profileStorage(localStorage);
+const state = loadState(store);
+const progress = loadWordProgress(store);
 const rand = mulberry32((Math.random() * 2 ** 32) >>> 0);
 let turn = null;
 let toastTimer = null;
 
 function save() {
-  saveState(localStorage, state);
-  saveWordProgress(localStorage, progress);
+  saveState(store, state);
+  saveWordProgress(store, progress);
 }
 
 // ---------- Kaupunkinäkymä ----------
@@ -105,7 +107,7 @@ function onOption(choice) {
 function finishTurn() {
   const today = todayStr();
   const { income, grown } = endTurn(state, turn, progress, today);
-  const bonus = claimTessereBonus(state, loadJson(localStorage, 'tessere.v1', {}).history, today);
+  const bonus = claimTessereBonus(state, loadJson(store, 'tessere.v1', {}).history, today);
   save();
   renderCity(Object.keys(RESOURCES));
   const right = turn.results.filter((r) => r.outcome === 'clean').length;
@@ -281,11 +283,11 @@ if (!speechSupported) {
   $('sound-btn').title = 'Selain ei tue puhesynteesiä';
 }
 updateSoundButton();
-$('version').textContent = `Impero v${VERSION}`;
+$('version').textContent = `Impero v${VERSION} · ${activeProfile(localStorage).name}`;
 
 const firstVisit = state.lastDay === null;
 startDay(state, todayStr());
-if (claimTessereBonus(state, loadJson(localStorage, 'tessere.v1', {}).history, todayStr())) {
+if (claimTessereBonus(state, loadJson(store, 'tessere.v1', {}).history, todayStr())) {
   showToast(`🀄 Tessere-bonus: +${TESSERE_BONUS} kaikkiin resursseihin`, 'ok', 2500);
 }
 save();
