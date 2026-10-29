@@ -9,6 +9,7 @@ import {
 import {
   RESOURCES, THEME_RESOURCE, ERAS, REGIONS, BUILDINGS, TECHS, EVENTS, EVENT_CHANCE,
   TURNS_PER_DAY, QUESTIONS_PER_TURN, EXPEDITION_QUESTIONS, EXPEDITION_PASS, TESSERE_BONUS,
+  EXTRA_TURNS_PER_DAY, EXTRA_TURN_COST,
 } from './data.js';
 
 export const KEY = 'impero.v1';
@@ -23,6 +24,7 @@ export function defaultState() {
     food: 0, // kerätty ruoka seuraavaa asukasta varten
     gloriaBonus: 0, // tapahtumista kertynyt gloria
     turnsLeft: TURNS_PER_DAY,
+    extraTurns: 0, // tänään ostetut lisävuorot
     lastDay: null,
     turns: 0, // pelattuja vuoroja yhteensä
     answered: 0,
@@ -39,6 +41,7 @@ export function loadState(storage) {
   s.cities ??= ['lazio'];
   s.gloriaBonus ??= 0;
   s.seenEras ??= ['regno'];
+  s.extraTurns ??= 0;
   return s;
 }
 
@@ -51,7 +54,25 @@ export function startDay(state, today) {
   if (state.lastDay !== today) {
     state.lastDay = today;
     state.turnsLeft = TURNS_PER_DAY;
+    state.extraTurns = 0;
   }
+}
+
+// Lisävuoro kullalla, kun päivän vuorot on käytetty: hinta nousee joka ostolla.
+export function extraTurnCost(state) {
+  return EXTRA_TURN_COST * (state.extraTurns + 1);
+}
+
+export function canBuyExtraTurn(state) {
+  return state.turnsLeft <= 0 && state.extraTurns < EXTRA_TURNS_PER_DAY && state.resources.gold >= extraTurnCost(state);
+}
+
+export function buyExtraTurn(state) {
+  if (!canBuyExtraTurn(state)) return false;
+  state.resources.gold -= extraTurnCost(state);
+  state.extraTurns++;
+  state.turnsLeft = 1;
+  return true;
 }
 
 export const building = (id) => BUILDINGS.find((b) => b.id === id);

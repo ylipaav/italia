@@ -1,11 +1,12 @@
 // Offline-tuki: sovelluksen tiedostot välimuistiin. Nosta versiota, kun tiedostot muuttuvat.
-const CACHE = 'tessere-v0.7.0';
+const CACHE = 'tessere-v0.7.1';
 const FILES = [
   './',
   'index.html',
   'style.css',
   'manifest.webmanifest',
   'icon.svg',
+  'og.png',
   'js/main.js',
   'js/board.js',
   'js/layout.js',

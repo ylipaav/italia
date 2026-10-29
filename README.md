@@ -43,7 +43,7 @@ pelit toimivat täysin kuten ennen.
 Civilization-henkinen rakentelupeli, jossa italian osaaminen on valtakunnan tuotantovoima.
 Ei sotaa eikä vastustajia: rakentelu, tutkimus ja laajentuminen riittävät.
 
-- **3 vuoroa päivässä**, kussakin kuusi tehtävää. Noin joka kolmas vuoro alkaa **tapahtumalla**,
+- **3 vuoroa päivässä**, kussakin kuusi tehtävää. Vuorojen loputtua voi ostaa kullalla enintään 3 lisävuoroa (10, 20, 30 💰). Noin joka kolmas vuoro alkaa **tapahtumalla**,
   johon vastataan italiaksi (*Compro / Rifiuto*); suomennos ja seuraus näkyvät valinnan jälkeen.
 - **Resurssit** sanan aiheen mukaan: ruoka 🌾, koti ja tekeminen 🔨, numerot, värit, aika ja
   kulttuuri 📜, matkustus ja ihmiset 💰. Vuoron sanat hajautetaan niin, että kaikkia kertyy.

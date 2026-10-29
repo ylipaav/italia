@@ -123,10 +123,10 @@ async function renderBoard() {
     const [t, i] = await Promise.all([fetchBoard(localStorage, 'tessere', { date: todayStr() }), fetchBoard(localStorage, 'impero')]);
     const row = (name, cells) => `<tr class="${name === me ? 'me' : ''}"><td>${esc(name)}</td>${cells.map((x) => `<td class="num">${x}</td>`).join('')}</tr>`;
     const tessere = t.rows.length
-      ? `<table class="board"><tr><th>Pelaaja</th><th>Aika</th><th>Virheet</th><th>Pöytä</th></tr>${t.rows.map((r) => row(r.name, [fmtTime(r.seconds), r.mistakes, esc(r.layout || '')])).join('')}</table>`
+      ? `<table class="board"><tr><th>Pelaaja</th><th class="num">⏱ Aika</th><th class="num">✗ Virheet</th></tr>${t.rows.map((r) => row(r.name, [fmtTime(r.seconds), r.mistakes])).join('')}</table>`
       : '<p class="empty">Kukaan ryhmässä ei ole vielä pelannut päivän pöytää.</p>';
     const impero = i.rows.length
-      ? `<table class="board"><tr><th>Pelaaja</th><th>⭐</th><th>👥</th><th>🏗️</th><th>📜</th></tr>${i.rows.map((r) => row(r.name, [r.gloria, r.pop, r.buildings, r.techs])).join('')}</table>`
+      ? `<table class="board"><tr><th>Pelaaja</th><th class="num">⭐ Gloria</th><th class="num">👥</th><th class="num">🏗️</th><th class="num">📜</th></tr>${i.rows.map((r) => row(r.name, [r.gloria, r.pop, r.buildings, r.techs])).join('')}</table>`
       : '<p class="empty">Ei vielä Impero-tuloksia ryhmässä.</p>';
     view.innerHTML = `<p class="board-title">🀄 Tessere tänään</p>${tessere}<p class="board-title">🏛️ Impero</p>${impero}`
       + `<p class="empty">Ryhmä <b>${esc(c.group)}</b>${c.enabled ? '' : ' · omia tuloksiasi ei lähetetä (ruksi asetuksista)'}</p>`;

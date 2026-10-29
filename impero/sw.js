@@ -1,11 +1,12 @@
 // Offline-tuki: sovelluksen tiedostot välimuistiin. Nosta versiota, kun tiedostot muuttuvat.
-const CACHE = 'impero-v0.4.1';
+const CACHE = 'impero-v0.4.2';
 const FILES = [
   './',
   'index.html',
   'style.css',
   'manifest.webmanifest',
   'icon.svg',
+  'og.png',
   'js/main.js',
   'js/game.js',
   'js/data.js',

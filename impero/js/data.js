@@ -147,5 +147,7 @@ export const EVENTS = [
 
 export const EVENT_CHANCE = 0.35;
 export const TURNS_PER_DAY = 3;
+export const EXTRA_TURNS_PER_DAY = 3; // kullalla ostettavia lisävuoroja päivässä
+export const EXTRA_TURN_COST = 10; // ensimmäinen lisävuoro; seuraavat 20, 30
 export const QUESTIONS_PER_TURN = 6;
 export const TESSERE_BONUS = 4; // kutakin resurssia, kun päivän Tessere-pöytä on pelattu

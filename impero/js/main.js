@@ -2,12 +2,12 @@ import { WORDS } from '../../shared/words.js';
 import { mulberry32 } from '../../shared/rng.js';
 import { todayStr, loadWordProgress, saveWordProgress, loadJson } from '../../shared/srs.js';
 import { speak, stopSpeech, speechSupported } from '../../shared/speech.js';
-import { RESOURCES, BUILDINGS, TECHS, REGIONS, ERAS, TURNS_PER_DAY, TESSERE_BONUS, EXPEDITION_PASS } from './data.js';
+import { RESOURCES, BUILDINGS, TECHS, REGIONS, ERAS, TURNS_PER_DAY, TESSERE_BONUS, EXPEDITION_PASS, EXTRA_TURNS_PER_DAY } from './data.js';
 import {
   loadState, saveState, startDay, build, buildBlocker, buildingCost, research, gloria, has, hasCity, requirementsMet,
   foodForNextPop, startTurn, startExpedition, answer, turnDone, endTurn, claimTessereBonus,
   currentEra, nextEra, region, regionStatus, expeditionBlocker, expeditionCost, masteredCount,
-  rollEvent, applyEvent,
+  rollEvent, applyEvent, extraTurnCost, canBuyExtraTurn, buyExtraTurn,
 } from './game.js';
 import { VERSION } from './version.js';
 import { profileStorage, activeProfile } from '../../shared/store.js';
@@ -108,16 +108,31 @@ function renderMap() {
 
 function renderTurnButton() {
   const btn = $('turn-btn');
-  btn.disabled = state.turnsLeft <= 0;
-  btn.innerHTML = state.turnsLeft > 0
-    ? `▶ Vuoro<span class="sub">${state.turnsLeft}/${TURNS_PER_DAY} jäljellä tänään</span>`
-    : `Vuorot käytetty<span class="sub">uudet huomenna</span>`;
+  const extraLeft = EXTRA_TURNS_PER_DAY - state.extraTurns;
+  if (state.turnsLeft > 0) {
+    btn.disabled = false;
+    btn.dataset.mode = 'turn';
+    btn.innerHTML = `▶ Vuoro<span class="sub">${state.turnsLeft}/${TURNS_PER_DAY} jäljellä tänään</span>`;
+  } else if (extraLeft > 0) {
+    btn.disabled = !canBuyExtraTurn(state);
+    btn.dataset.mode = 'extra';
+    btn.innerHTML = `💰 Lisävuoro ${extraTurnCost(state)}<span class="sub">${extraLeft} ostettavissa tänään</span>`;
+  } else {
+    btn.disabled = true;
+    btn.dataset.mode = 'none';
+    btn.innerHTML = `Vuorot käytetty<span class="sub">uudet huomenna</span>`;
+  }
 }
 
 // ---------- Vuoro, tapahtumat ja tutkimusmatkat ----------
 
 function beginTurn() {
-  if (state.turnsLeft <= 0) return;
+  if (state.turnsLeft <= 0) {
+    if (!buyExtraTurn(state)) return;
+    save();
+    renderResources(['gold']);
+    showToast(`💰 Lisävuoro ostettu (${state.extraTurns}/${EXTRA_TURNS_PER_DAY} tänään)`, 'ok');
+  }
   const event = rollEvent(state, rand);
   if (event) {
     pendingEvent = { event, next: () => startQuiz(startTurn(state, WORDS, progress, todayStr(), rand, speechOpts())) };
@@ -262,7 +277,11 @@ function finishTurn() {
     ${suggestion()}
     <div class="actions">
       <button class="btn" type="button" data-action="build">🏗️ Rakenna</button>
-      <button class="btn primary" type="button" data-action="${state.turnsLeft > 0 ? 'turn' : 'close'}">${state.turnsLeft > 0 ? `▶ Seuraava vuoro (${state.turnsLeft})` : 'Valmis tältä päivältä'}</button>
+      ${state.turnsLeft > 0
+        ? `<button class="btn primary" type="button" data-action="turn">▶ Seuraava vuoro (${state.turnsLeft})</button>`
+        : canBuyExtraTurn(state)
+          ? `<button class="btn primary" type="button" data-action="turn">💰 Lisävuoro ${extraTurnCost(state)}</button>`
+          : '<button class="btn primary" type="button" data-action="close">Valmis tältä päivältä</button>'}
     </div>
   `);
   if (era) setTimeout(() => showEra(era, true), 300);
@@ -389,7 +408,7 @@ function showHelp() {
   openSheet(`
     <h2>Näin pelaat</h2>
     <ul class="help">
-      <li>Joka päivä saat <b>${TURNS_PER_DAY} vuoroa</b>. Vuorossa on kuusi italian tehtävää, joskus ensin tapahtuma, johon vastataan italiaksi.</li>
+      <li>Joka päivä saat <b>${TURNS_PER_DAY} vuoroa</b>. Vuorossa on kuusi italian tehtävää, joskus ensin tapahtuma, johon vastataan italiaksi. Kun vuorot on käytetty, voit ostaa kullalla 💰 enintään ${EXTRA_TURNS_PER_DAY} lisävuoroa (hinta nousee joka ostolla).</li>
       <li>Oikea vastaus tuottaa resurssin sanan aiheen mukaan: ruoka 🌾, koti ja tekeminen 🔨, numerot, värit, aika ja kulttuuri 📜, matkustus ja ihmiset 💰.</li>
       <li><b>Rakenna</b> 🏗️ Roomaa: rakennukset tuottavat joka vuoro, kasvattavat väestöä 👥 tai tuovat gloriaa ⭐. Ihmeet ✨ vaativat myös, että aiheen sanat ovat hallussa.</li>
       <li><b>Tutki</b> 📜 kielioppipuuta: artikkelit, monikot, verbintaivutus, prepositiot… Jokainen tutkimus tuo uuden tehtävätyypin tai edun.</li>

@@ -333,3 +333,24 @@ test('Tessere-bonus kerran päivässä', () => {
   assert.equal(claimTessereBonus(s, { [T]: {} }, T), false);
   assert.ok(canAfford(s, { gold: 4 }));
 });
+
+test('lisävuorot kullalla: hinta nousee, enintään kolme päivässä, uusi päivä nollaa', async () => {
+  const { extraTurnCost, canBuyExtraTurn, buyExtraTurn } = await import('../impero/js/game.js');
+  const s = defaultState();
+  startDay(s, T);
+  assert.equal(canBuyExtraTurn(s), false, 'vuoroja on vielä');
+  s.turnsLeft = 0;
+  s.resources.gold = 65;
+  assert.equal(extraTurnCost(s), 10);
+  assert.equal(buyExtraTurn(s), true);
+  assert.deepEqual([s.turnsLeft, s.extraTurns, s.resources.gold], [1, 1, 55]);
+  s.turnsLeft = 0;
+  assert.equal(extraTurnCost(s), 20);
+  assert.equal(buyExtraTurn(s), true);
+  s.turnsLeft = 0;
+  assert.equal(buyExtraTurn(s), true, 'kolmas maksaa 30, kultaa 35');
+  s.turnsLeft = 0;
+  assert.equal(canBuyExtraTurn(s), false, 'päivän lisävuorot käytetty');
+  startDay(s, '2026-10-30');
+  assert.deepEqual([s.turnsLeft, s.extraTurns], [TURNS_PER_DAY, 0]);
+});
