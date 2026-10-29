@@ -4,7 +4,7 @@ import {
   loadProfiles, addProfile, switchProfile, renameProfile, deleteProfile,
   exportProfile, parseExport, importProfile, describeExport, activeProfile,
 } from './shared/store.js';
-import { loadBoardConfig, saveBoardConfig, boardReady, fetchBoard, pingBoard } from './shared/board.js';
+import { loadBoardConfig, saveBoardConfig, boardReady, fetchBoard, pingBoard, DEFAULT_BOARD_URL, DEFAULT_GROUP } from './shared/board.js';
 import { todayStr } from './shared/srs.js';
 
 const $ = (id) => document.getElementById(id);
@@ -117,11 +117,6 @@ async function renderBoard() {
   const c = loadBoardConfig(localStorage);
   const view = $('board-view');
   const me = activeProfile(localStorage).name;
-  if (!c.url || !c.group) {
-    view.innerHTML = '<p class="empty">Tulostaulu ei ole käytössä. Avaa asetukset ja anna palvelimen osoite ja ryhmäkoodi.</p>';
-    $('board-settings').open = true;
-    return;
-  }
   view.innerHTML = '<p class="empty">Haetaan…</p>';
   try {
     const [t, i] = await Promise.all([fetchBoard(localStorage, 'tessere', { date: todayStr() }), fetchBoard(localStorage, 'impero')]);
@@ -133,7 +128,7 @@ async function renderBoard() {
       ? `<table class="board"><tr><th>Pelaaja</th><th>⭐</th><th>👥</th><th>🏗️</th><th>📜</th></tr>${i.rows.map((r) => row(r.name, [r.gloria, r.pop, r.buildings, r.techs])).join('')}</table>`
       : '<p class="empty">Ei vielä Impero-tuloksia ryhmässä.</p>';
     view.innerHTML = `<p class="board-title">🀄 Tessere tänään</p>${tessere}<p class="board-title">🏛️ Impero</p>${impero}`
-      + (c.enabled ? '' : '<p class="empty">Omia tuloksiasi ei lähetetä. Ruksi lähetys asetuksista.</p>');
+      + `<p class="empty">Ryhmä <b>${esc(c.group)}</b>${c.enabled ? '' : ' · omia tuloksiasi ei lähetetä (ruksi asetuksista)'}</p>`;
   } catch (err) {
     view.innerHTML = `<p class="empty">Tulostaulua ei saatu haettua (${esc(err.message)}). Tarkista osoite ja verkkoyhteys.</p>`;
   }
@@ -141,7 +136,7 @@ async function renderBoard() {
 
 $('board-save').addEventListener('click', async () => {
   const status = $('board-status');
-  const c = { url: $('board-url').value.trim(), group: $('board-group').value.trim(), enabled: $('board-enabled').checked };
+  const c = { url: $('board-url').value.trim() || DEFAULT_BOARD_URL, group: $('board-group').value.trim() || DEFAULT_GROUP, enabled: $('board-enabled').checked };
   if (c.url) {
     status.className = 'status';
     status.textContent = 'Tarkistetaan palvelinta…';

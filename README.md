@@ -34,8 +34,8 @@ Kaikki tiedot ovat pelaajan selaimen `localStorage`ssa; palvelinta ei ole.
 ## Tulostaulu (valinnainen) 🏆
 
 Eri puhelimilla pelaavien tulokset saa yhteiselle tulostaululle pienellä Cloudflare Workerilla
-(`server/`). Pelaajat antavat saman ryhmäkoodin, ja aloitussivu näyttää päivän Tessere-ajat ja
-Imperon tilanteen. Lähetys on pois päältä, kunnes pelaaja kytkee sen itse. Ilman palvelinta
+(`server/`). Kaikki ovat oletuksena ryhmässä `MYP` ja lähetys on päällä; aloitussivu näyttää päivän Tessere-ajat ja
+Imperon tilanteen. Ryhmäkoodin voi vaihtaa ja lähetyksen kytkeä pois asetuksista. Ilman palvelinta
 pelit toimivat täysin kuten ennen.
 
 ## Impero 🏛️

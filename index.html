@@ -47,6 +47,9 @@
     .check { display: flex; gap: 8px; align-items: center; margin-top: 12px; font-size: 0.9rem; color: var(--ink); }
     .check input { width: 20px; height: 20px; }
     details summary { cursor: pointer; font-weight: 600; color: var(--accent); }
+    details.advanced { margin-top: 10px; }
+    details.advanced summary { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
+    .hint { font-weight: 400; }
     table.board { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-variant-numeric: tabular-nums; }
     table.board th { text-align: left; color: var(--muted); font-size: 0.75rem; font-weight: 600; padding: 4px 6px; border-bottom: 1px solid var(--edge); }
     table.board td { padding: 6px; border-bottom: 1px solid var(--edge); font-size: 0.9rem; }
@@ -84,10 +87,12 @@
       <div id="board-view"></div>
       <details id="board-settings">
         <summary>Asetukset</summary>
-        <p style="margin-top:10px">Tulostaulu vertaa saman <b>ryhmäkoodin</b> pelaajia eri puhelimilla. Sovi koodi porukan kesken. Lähetys on päällä vain, kun valinta on ruksittu.</p>
-        <label class="field">Palvelimen osoite<input id="board-url" type="url" placeholder="https://italia-board.xxx.workers.dev" autocomplete="off"></label>
-        <label class="field">Ryhmäkoodi<input id="board-group" type="text" placeholder="esim. perhe-2026" autocomplete="off"></label>
         <label class="check"><input id="board-enabled" type="checkbox"> Lähetä tulokseni tulostaululle nimellä <span class="name" id="board-name"></span></label>
+        <label class="field">Ryhmäkoodi <span class="hint">(oletus MYP – sama koodi näkee samat tulokset)</span><input id="board-group" type="text" placeholder="MYP" autocomplete="off"></label>
+        <details class="advanced">
+          <summary>Lisäasetukset</summary>
+          <label class="field">Palvelimen osoite<input id="board-url" type="url" placeholder="https://…workers.dev" autocomplete="off"></label>
+        </details>
         <div class="row" style="margin-top:10px">
           <button class="btn primary" id="board-save" type="button">Tallenna</button>
         </div>

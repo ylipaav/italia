@@ -7,13 +7,20 @@ import { activeProfile } from './store.js';
 export const BOARD_KEY = 'italia.board.v1';
 // Oletusosoite voidaan asettaa tähän julkaisun jälkeen, jolloin pelaajien ei tarvitse kirjoittaa sitä.
 export const DEFAULT_BOARD_URL = 'https://italia-board.marko-1a4.workers.dev';
+// Oletusryhmä: kaikki pelaavat samassa ryhmässä, ellei asetuksista vaihda toista koodia.
+export const DEFAULT_GROUP = 'MYP';
+const DEFAULTS = { url: DEFAULT_BOARD_URL, group: DEFAULT_GROUP, enabled: true };
 
 export function loadBoardConfig(storage) {
   try {
     const c = JSON.parse(storage.getItem(BOARD_KEY) || '{}');
-    return { url: DEFAULT_BOARD_URL, group: '', enabled: false, ...c };
+    const merged = { ...DEFAULTS, ...c };
+    // Tyhjäksi jätetty kenttä palaa oletukseen.
+    if (!merged.url) merged.url = DEFAULT_BOARD_URL;
+    if (!merged.group) merged.group = DEFAULT_GROUP;
+    return merged;
   } catch {
-    return { url: DEFAULT_BOARD_URL, group: '', enabled: false };
+    return { ...DEFAULTS };
   }
 }
 
