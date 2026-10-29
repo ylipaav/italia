@@ -1,11 +1,11 @@
-import { WORDS } from './words.js';
+import { WORDS } from '../../shared/words.js';
 import { LAYOUTS, pickLayout, flatLayout } from './layout.js';
 import { generateBoard, isFree, isMatch, findFreePairs } from './board.js';
-import { hashString, mulberry32 } from './rng.js';
+import { hashString, mulberry32 } from '../../shared/rng.js';
 import {
   loadState, saveState, todayStr, pickWords, applyResult, updateStreak, currentStreak,
 } from './progress.js';
-import { speak, stopSpeech, speechSupported } from './speech.js';
+import { speak, stopSpeech, speechSupported } from '../../shared/speech.js';
 import { VERSION } from './version.js';
 import {
   puzzleNumber, computeStats, wordStats, calendarWeeks, sequenceEmoji, shareText, formatTime,

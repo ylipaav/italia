@@ -1,37 +1,38 @@
-// Edistyminen: jaksotettu kertaus (Leitner-laatikot), päivän putki ja tallennus.
+// Jaksotettu kertaus (Leitner-laatikot), päivämääräapurit ja tallennus.
+// Sanojen edistyminen on yhteinen kaikille peleille: sekä Tessere että Impero lukevat ja
+// päivittävät samaa `italia.words.v1`-avainta, joten yhdessä pelissä opittu sana kertautuu toisessa.
 
 import { shuffle } from './rng.js';
 
-const KEY = 'tessere.v1';
+export const WORDS_KEY = 'italia.words.v1';
 
 // Laatikon numero → montako päivää seuraavaan kertaukseen.
 export const INTERVALS = [0, 1, 3, 7, 14, 30, 60];
 
-export function defaultState() {
-  return {
-    words: {}, streak: 0, bestStreak: 0, lastDaily: null, daily: null, sound: true,
-    icons: 'some', // 'none' | 'some' | 'all': näytetäänkö suomen sanat kuvakkeina, kun kuvake on
-    history: {}, // päivämäärä → päivän pöydän tulos
-    practice: 0, // pelattujen harjoituspöytien määrä
-  };
-}
-
-export function loadState(storage) {
+export function loadJson(storage, key, fallback) {
   try {
-    const raw = storage.getItem(KEY);
-    if (raw) return { ...defaultState(), ...JSON.parse(raw) };
+    const raw = storage.getItem(key);
+    if (raw) return { ...fallback, ...JSON.parse(raw) };
   } catch {
     // Selain voi estää tallennuksen (esim. yksityinen tila): pelataan ilman sitä.
   }
-  return defaultState();
+  return fallback;
 }
 
-export function saveState(storage, state) {
+export function saveJson(storage, key, value) {
   try {
-    storage.setItem(KEY, JSON.stringify(state));
+    storage.setItem(key, JSON.stringify(value));
   } catch {
     // Ks. yllä.
   }
+}
+
+export function loadWordProgress(storage) {
+  return loadJson(storage, WORDS_KEY, {});
+}
+
+export function saveWordProgress(storage, progress) {
+  saveJson(storage, WORDS_KEY, progress);
 }
 
 export function todayStr(d = new Date()) {
@@ -65,7 +66,7 @@ export function pickWords(words, progress, today, count, rand) {
   return shuffle(chosen, rand);
 }
 
-// outcome: 'clean' (ei virheitä), 'hint' (vihje käytetty), 'miss' (väärä pari).
+// outcome: 'clean' (ei virheitä), 'hint' (vihje käytetty), 'miss' (väärä vastaus).
 export function applyResult(progress, results, today) {
   for (const { id, outcome } of results) {
     const entry = progress[id] ?? { box: 0, seen: 0 };
@@ -76,17 +77,4 @@ export function applyResult(progress, results, today) {
     entry.seen += 1;
     progress[id] = entry;
   }
-}
-
-export function updateStreak(state, today) {
-  if (state.lastDaily === today) return;
-  state.streak = state.lastDaily === addDays(today, -1) ? state.streak + 1 : 1;
-  state.lastDaily = today;
-  state.bestStreak = Math.max(state.bestStreak, state.streak);
-}
-
-// Näytettävä putki: katkeaa, jos eilinen ja tämä päivä ovat molemmat pelaamatta.
-export function currentStreak(state, today) {
-  if (state.lastDaily === today || state.lastDaily === addDays(today, -1)) return state.streak;
-  return 0;
 }

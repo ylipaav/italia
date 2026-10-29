@@ -1,6 +1,6 @@
 // Pöydän logiikka: vapaat laatat, parien etsintä ja aina ratkaistavan pöydän generointi.
 
-import { shuffle } from './rng.js';
+import { shuffle } from '../../shared/rng.js';
 
 function overlaps(a, b) {
   return Math.abs(a.x - b.x) < 2 && Math.abs(a.y - b.y) < 2;

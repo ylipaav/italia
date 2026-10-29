@@ -10,9 +10,10 @@ const FILES = [
   'js/board.js',
   'js/layout.js',
   'js/progress.js',
-  'js/rng.js',
-  'js/speech.js',
-  'js/words.js',
+  '../shared/words.js',
+  '../shared/rng.js',
+  '../shared/speech.js',
+  '../shared/srs.js',
   'js/version.js',
   'js/stats.js',
 ];

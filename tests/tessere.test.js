@@ -1,13 +1,13 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { WORDS } from '../js/words.js';
-import { LAYOUTS, pickLayout, flatLayout } from '../js/layout.js';
-import { generateBoard, isFree, isMatch, findFreePairs } from '../js/board.js';
-import { hashString, mulberry32 } from '../js/rng.js';
+import { WORDS } from '../shared/words.js';
+import { LAYOUTS, pickLayout, flatLayout } from '../tessere/js/layout.js';
+import { generateBoard, isFree, isMatch, findFreePairs } from '../tessere/js/board.js';
+import { hashString, mulberry32 } from '../shared/rng.js';
 import {
   pickWords, applyResult, updateStreak, currentStreak, addDays, defaultState,
-} from '../js/progress.js';
+} from '../tessere/js/progress.js';
 
 test('sanastossa ei ole päällekkäisiä sanoja', () => {
   assert.equal(new Set(WORDS.map((w) => w.it)).size, WORDS.length);
@@ -136,7 +136,7 @@ test('päiväputki kasvaa peräkkäisinä päivinä ja katkeaa välipäivästä'
 });
 
 test('tilastot: pöydän numero, kalenteri, sanatilat ja jakoteksti', async () => {
-  const { puzzleNumber, calendarWeeks, wordStats, computeStats, shareText, sequenceEmoji } = await import('../js/stats.js');
+  const { puzzleNumber, calendarWeeks, wordStats, computeStats, shareText, sequenceEmoji } = await import('../tessere/js/stats.js');
   assert.equal(puzzleNumber('2026-10-28'), 1);
   assert.equal(puzzleNumber('2026-11-01'), 5);
 
