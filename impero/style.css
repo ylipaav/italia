@@ -28,6 +28,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html, body { margin: 0; height: 100%; }
 body {
   display: flex;
@@ -87,9 +88,60 @@ button:disabled { opacity: 0.5; cursor: default; }
   background: var(--sky);
   overflow: hidden;
 }
-.city-head { display: flex; justify-content: space-between; align-items: baseline; padding: 12px 14px 0; }
-.city-head h2 { margin: 0; font-size: 1.3rem; color: var(--accent); }
-.city-meta { display: flex; gap: 10px; color: var(--muted); font-size: 0.9rem; font-weight: 600; }
+.city-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 12px 0; }
+.views { display: flex; gap: 4px; padding: 3px; border-radius: 10px; background: rgb(0 0 0 / 0.08); }
+.view-btn { border: none; background: none; border-radius: 8px; padding: 5px 10px; font-weight: 700; color: var(--muted); }
+.view-btn.on { background: var(--card); color: var(--accent); box-shadow: 0 1px 3px rgb(0 0 0 / 0.15); }
+.city-meta { display: flex; gap: 8px; color: var(--muted); font-size: 0.85rem; font-weight: 600; white-space: nowrap; }
+.era { padding: 6px 12px 0; }
+.era-btn { border: 1px solid var(--edge); background: var(--card); border-radius: 999px; padding: 3px 10px; font-size: 0.8rem; font-weight: 700; color: var(--accent); }
+.era-btn small { font-weight: 500; color: var(--muted); }
+
+/* Kartta */
+.map { flex: 1; min-height: 0; display: flex; justify-content: center; padding: 4px 10px 0; }
+.map svg { height: 100%; max-width: 100%; }
+.map .land { fill: rgb(255 255 255 / 0.45); stroke: rgb(0 0 0 / 0.15); stroke-width: 0.6; }
+.map .road { stroke: var(--accent); stroke-width: 0.8; opacity: 0.7; }
+.map .road.dim { stroke: var(--muted); opacity: 0.25; stroke-dasharray: 1.5 1.5; }
+.map .road.sea { stroke-dasharray: 1 1.5; }
+.map .region { cursor: pointer; }
+.map .region circle { fill: var(--card); stroke: var(--edge); stroke-width: 0.8; }
+.map .region.owned circle { fill: var(--accent); stroke: var(--card); }
+.map .region.available circle { fill: #f3d27a; stroke: #b08a2e; animation: glow 1.6s ease-in-out infinite; }
+.map .region.sea circle { fill: #bfe0f5; stroke: #5b9bd5; }
+.map .region.hidden circle { fill: rgb(0 0 0 / 0.08); stroke: rgb(0 0 0 / 0.15); }
+.map .ico { font-size: 5px; text-anchor: middle; }
+.map .lbl { font-size: 3.6px; text-anchor: middle; fill: var(--ink); font-weight: 600; }
+.map .region.hidden .lbl { fill: var(--muted); }
+@keyframes glow { 50% { stroke-width: 1.8; } }
+
+/* Aikakausien sävyt */
+body[data-era="repubblica"] { --accent: #6b4a8a; --sky: linear-gradient(#dcd3ea, #f3e9d6); }
+body[data-era="impero"] { --accent: #8a1c1c; --sky: linear-gradient(#f0d2c2, #f3e9d6); }
+body[data-era="rinascimento"] { --accent: #1f6b8a; --sky: linear-gradient(#cfe7ee, #f3e9d6); }
+body[data-era="moderna"] { --accent: #2a7a3f; --sky: linear-gradient(#d6ead9, #f3e9d6); }
+@media (prefers-color-scheme: dark) {
+  body[data-era="repubblica"] { --accent: #b99ad6; --sky: linear-gradient(#2d2640, #1d1a17); }
+  body[data-era="impero"] { --accent: #e07a7a; --sky: linear-gradient(#402424, #1d1a17); }
+  body[data-era="rinascimento"] { --accent: #7cc0d8; --sky: linear-gradient(#22363f, #1d1a17); }
+  body[data-era="moderna"] { --accent: #7fcf93; --sky: linear-gradient(#223a28, #1d1a17); }
+}
+
+/* Tapahtuma, tutkimusmatka, aikakaudet, ihmeet */
+.event-text { font-size: 1.3rem; font-weight: 700; line-height: 1.35; margin: 4px 0 6px; }
+.say-inline { border: none; background: none; font-size: 1rem; vertical-align: middle; }
+.exp-title { margin: 0 0 6px; font-weight: 700; color: var(--accent); font-size: 0.9rem; }
+.q-prompt.long { font-size: 1.35rem; }
+.eras { list-style: none; margin: 8px 0 0; padding: 0; }
+.eras li { padding: 8px 10px; border-left: 3px solid var(--edge); margin-bottom: 6px; color: var(--muted); font-size: 0.9rem; }
+.eras li.past { border-color: var(--ok); }
+.eras li.now { border-color: var(--accent); background: var(--bg); color: var(--ink); border-radius: 0 10px 10px 0; }
+.eras li span { display: block; font-size: 0.8rem; margin-top: 2px; }
+.fact { font-size: 1.05rem; line-height: 1.5; padding: 12px; border-radius: 12px; background: var(--bg); border-left: 4px solid var(--accent); }
+.items li.done { opacity: 0.7; }
+.mastery { height: 5px; margin-top: 4px; border-radius: 3px; background: var(--edge); overflow: hidden; }
+.mastery span { display: block; height: 100%; background: var(--accent); }
+.sheet .cost .short { color: var(--bad); font-weight: 700; }
 
 .skyline {
   flex: 1;

@@ -1,5 +1,5 @@
 // Offline-tuki: sovelluksen tiedostot välimuistiin. Nosta versiota, kun tiedostot muuttuvat.
-const CACHE = 'impero-v0.3.1';
+const CACHE = 'impero-v0.4.0';
 const FILES = [
   './',
   'index.html',
@@ -16,6 +16,7 @@ const FILES = [
   '../shared/srs.js',
   '../shared/store.js',
   '../shared/board.js',
+  '../shared/grammar.js',
 ];
 
 self.addEventListener('install', (e) => {

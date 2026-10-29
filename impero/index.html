@@ -25,10 +25,15 @@
 
   <main class="city">
     <div class="city-head">
-      <h2>Roma</h2>
+      <div class="views" role="tablist">
+        <button class="view-btn on" id="view-city" type="button" role="tab">🏛️ Roma</button>
+        <button class="view-btn" id="view-map" type="button" role="tab">🗺️ Italia</button>
+      </div>
       <div class="city-meta" id="city-meta"></div>
     </div>
+    <div class="era" id="era"></div>
     <div class="skyline" id="skyline" aria-label="Rakennukset"></div>
+    <div class="map" id="map" hidden aria-label="Italian kartta"></div>
     <p class="growth" id="growth"></p>
   </main>
 

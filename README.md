@@ -40,19 +40,31 @@ pelit toimivat täysin kuten ennen.
 
 ## Impero 🏛️
 
-Civilization-henkinen rakentelupeli, jossa italian osaaminen on kaupungin tuotantovoima.
+Civilization-henkinen rakentelupeli, jossa italian osaaminen on valtakunnan tuotantovoima.
+Ei sotaa eikä vastustajia: rakentelu, tutkimus ja laajentuminen riittävät.
 
-- **3 vuoroa päivässä**, kussakin kuusi tehtävää: suomi → italia, kuvake → italia ja tutkimusten
-  myötä italia → suomi, kuuntelu ja artikkelit (*il, la, lo, l'*).
-- **Resurssit** sanan aiheen mukaan: ruokasanat 🌾, kodin ja tekemisen sanat 🔨, numerot, värit ja
-  aika 📜, matkustus ja ihmiset 💰. Vuoron sanat hajautetaan niin, että kaikkia kertyy.
-- **Rakennukset** (Foro, Granaio, Mercato, Tempio, Biblioteca, Acquedotto, Terme, Anfiteatro ja
-  ihmeet Colosseo ja Pantheon) tuottavat joka vuoro, kasvattavat väestöä 👥 tai tuovat gloriaa ⭐.
-- **Kielioppipuu** 📜: L'alfabeto → L'ascolto / Gli articoli → Il commercio / L'agricoltura.
-- **Väestö** kasvaa ruoasta, ja isompi kaupunki tuottaa enemmän joka vastauksesta.
+- **3 vuoroa päivässä**, kussakin kuusi tehtävää. Noin joka kolmas vuoro alkaa **tapahtumalla**,
+  johon vastataan italiaksi (*Compro / Rifiuto*); suomennos ja seuraus näkyvät valinnan jälkeen.
+- **Resurssit** sanan aiheen mukaan: ruoka 🌾, koti ja tekeminen 🔨, numerot, värit, aika ja
+  kulttuuri 📜, matkustus ja ihmiset 💰. Vuoron sanat hajautetaan niin, että kaikkia kertyy.
+- **Kartta** 🗺️: Italia 13 alueena, aluksi sumun peitossa. Tutkimusmatka naapurialueelle maksaa
+  🌾 ja 💰, vie vuoron ja sisältää kuusi tehtävää alueen aiheesta; 4/6 oikein perustaa kaupungin.
+  Kaupungit tuottavat (Firenze 📜, Milano 💰…) tai vahvistavat aiheen sanoja (Napoli: ruoka).
+  Sicilia ja Sardegna vaativat tutkimuksen *La navigazione*.
+- **Aikakaudet**: Regno → Repubblica (⭐ 60) → Impero (160) → Rinascimento (320) → Italia moderna
+  (600). Jokainen vaihtaa värisävyn ja avaa rakennuksia; renessanssi tuo kulttuurisanaston.
+- **Rakennukset** (24): Forosta ja Granaiosta Universitàan ja Ferroviaan. **Ihmeet** ✨ (Colosseo,
+  Pantheon, Via Appia, Duomo di Firenze, Divina Commedia, Vespa) vaativat resurssien lisäksi,
+  että aiheen sanoja on hallussa, ja kertovat valmistuessaan lyhyen kulttuuritiedon.
+- **Kielioppipuu** 📜 (18 tutkimusta): L'alfabeto, I numeri, L'ascolto, Gli articoli, I plurali,
+  Il presente, Il passato prossimo, Il futuro, Le preposizioni, Gli aggettivi, I numeri grandi
+  (hinnat ja kellonajat) sekä edut (Il commercio, L'agricoltura, L'esplorazione, La navigazione,
+  L'ingegneria, La cultura, La stampa). Avatut tehtävätyypit tulevat vuoroihin ja tuottavat 📜.
+- **Väestö** kasvaa ruoasta, ja isompi valtakunta tuottaa enemmän joka vastauksesta.
 - **Tessere-bonus** 🀄: päivän Tessere-pöytä antaa kerran päivässä +4 kaikkiin resursseihin.
-- Tiedostot: `impero/js/data.js` (rakennukset, tutkimukset), `game.js` (logiikka, testattu),
-  `main.js` (käyttöliittymä).
+- Tiedostot: `impero/js/data.js` (alueet, aikakaudet, rakennukset, tutkimukset, tapahtumat),
+  `game.js` (logiikka, testattu), `main.js` (käyttöliittymä), `shared/grammar.js` (verbit,
+  numerot, monikot, prepositiot, adjektiivit).
 
 ## Tessere 🀄
 
@@ -97,8 +109,7 @@ sivun pitää olla tyhjä. Oikea pari poistuu, ja alta paljastuu uusia laattoja.
 
 ## Jatkoideoita
 
-- Impero: Italian kartta ja uudet kaupungit, tapahtumat, verbien taivutus kielioppipuuhun
-
+- Impero: lisää alueita ja tapahtumia, kaupunkikohtaiset rakennukset, tasapainotus pelikokemuksen mukaan
 - Lisää pöytämuotoja (pyramidi, Colosseum) ja teemapöytiä
 - Verbien taivutusparit, artikkelipelit (*il / la*)
 - Harhautuslaatat ja "väärät ystävät" (*la camera* = huone)
